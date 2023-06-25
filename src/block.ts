@@ -57,17 +57,16 @@ export class block {
         this.space.element.appendChild(this.element);
         if (this.parentInput) {
             this.parentInput.value = null
-            this.parentInput = null
         }
     }
 
     // 将该积木脱离输入
-    private solitary(input: blockInput): void {
-        let targetBlock: block = input.value as block
-        targetBlock.parentInput = null;
-        solitary(targetBlock.element, this.space.element);
-        targetBlock.dragStart();
-
+    private solitary(): void {
+        if (this.parentInput) {
+            this.parentInput.value = null
+        }
+        solitary(this.element, this.space.element);
+        this.dragStart();
     }
     // 将该积木放入输入
     private enterInput(input: blockInput): void {
@@ -88,14 +87,14 @@ export class block {
     private handleConnect(inputId: string, input: blockInput, block: block) {
         let insert: block | null = null;
         if (input.value) {
-            this.solitary(input);
             insert = input.value as block;
+            insert.solitary();
         }
-        debugger
+        this.enterInput(input)
         if (insert && this.inputs.next) {
             (insert as block).enterInput(this.getSmallestChild().inputs.next)
         }
-        this.enterInput(input)
+
     }
     public clone(): block {
         return new this.space.blockClasses[this.constructor.name]({ create: true });
