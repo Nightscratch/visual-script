@@ -4,6 +4,9 @@ export const addDropdown = (newblock: block) => {
   let dropdown: HTMLElement | null = null;
 
   newblock.element.addEventListener('contextmenu', (event: MouseEvent) => {
+    if (!newblock.draggableBlock.includes(event.target as HTMLElement)) {
+        return;
+    }
     event.preventDefault(); // 阻止默认的右键菜单
 
     if (dropdown) {
@@ -13,7 +16,6 @@ export const addDropdown = (newblock: block) => {
     }
 
     dropdown = document.createElement('div');
-    dropdown.classList.add('dropdown');
     dropdown.style.position = 'absolute';
     dropdown.style.left = `${event.clientX}px`;
     dropdown.style.top = `${event.clientY}px`;
