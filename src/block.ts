@@ -60,7 +60,7 @@ export class block {
         }
     }
 
-    // 将该积木脱离输入
+    // a 将该积木脱离输入
     private solitary(): void {
         if (this.parentInput) {
             this.parentInput.value = null

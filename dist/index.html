@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vite App</title>
+    <style>
+      .block {
+        position: absolute;
+      }
+      #block-display{
+        display: inline-flex;
+        background-color: rgb(76, 151, 255);
+        border: 2px solid rgb(51, 115, 204);
+        border-radius: 5px;
+        align-items: center;
+      }
+
+      .input-block {
+        position: static;
+      }
+
+      * {
+        user-select: none;
+      }
+
+      .block-space {
+        background-color: antiquewhite;
+        position: relative;
+        width: 800px;
+        height: 400px;
+        overflow-y: scroll;
+        margin: 0;
+      }
+
+      .drag-block {
+        box-shadow: #000 0px 0px 10px;
+      }
+
+      .block-input {
+        border-radius: 10px;
+        min-height: 15px;
+        min-width: 25px;
+        background-color: aliceblue;
+        margin: 2px;
+      }
+
+      .next-input {
+        background-color: transparent;
+        margin-top: -2px;
+      }
+      .block-text,
+      body {
+        margin: 0;
+        padding: 0;
+      }
+      .block-text{
+        color: white;
+        font-size: 0.8em;
+        padding: 2px;
+      }
+    </style>
+    <script src="./visual-script/assets/index.5401f383.js"></script>
+  </head>
+
+  <body>
+    <div id="blocklyDiv" class="block-space"></div>
+    
+  </body>
+
+</html>
