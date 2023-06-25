@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vite App</title>
+    <style>
+      .block {
+        position: absolute;
+      }
+      #block-display{
+        display: inline-flex;
+        background-color: rgb(76, 151, 255);
+        border: 2px solid rgb(51, 115, 204);
+        border-radius: 5px;
+        align-items: center;
+      }
+
+      .input-block {
+        position: static;
+      }
+
+      * {
+        user-select: none;
+      }
+
+      .block-space {
+        background-color: antiquewhite;
+        position: relative;
+        width: 800px;
+        height: 400px;
+        overflow-y: scroll;
+        margin: 0;
+      }
+
+      .drag-block {
+        box-shadow: #000 0px 0px 10px;
+      }
+
+      .block-input {
+        border-radius: 10px;
+        min-height: 15px;
+        min-width: 25px;
+        background-color: aliceblue;
+        margin: 2px;
+      }
+
+      .next-input {
+        background-color: transparent;
+        margin-top: -2px;
+      }
+      .block-text,
+      body {
+        margin: 0;
+        padding: 0;
+      }
+      .block-text{
+        color: white;
+        font-size: 0.8em;
+        padding: 2px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="blocklyDiv" class="block-space"></div>
+    <button id="c">copy</button>
+    <button id="d">delete</button>
+
+    <script type="module">
+      import { VisualBlock } from './src/index'
+      import { moveBlock } from './src/block'
+
+      let app = new VisualBlock({
+        element: document.getElementById('blocklyDiv')
+      });
+      app.registerBlock(moveBlock)
+      let a = new moveBlock({
+        create: true
+      })
+      app.addBlock(a);
+
+
+
+
+      document.getElementById('c').addEventListener('click',()=>{
+        a.copy()
+      })
+      document.getElementById('d').addEventListener('click',()=>{
+        a.delete()
+      })
+      window.app= app
+    </script>
+  </body>
+
+</html>
