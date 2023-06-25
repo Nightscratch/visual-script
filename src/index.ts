@@ -1,5 +1,6 @@
 import { initOption } from "./interface";
 import { draggable } from "./utils/drag";
+import { addDropdown } from "./utils/combobox"
 import { block } from "./block";
 
 export class VisualBlock {
@@ -15,6 +16,7 @@ export class VisualBlock {
         this.blocks.push(newBlock);
         this.element.appendChild(newBlock.element);
         draggable(newBlock);
+        addDropdown(newBlock);
     }
     registerBlock(blockClass: any) {
         this.blockClasses[blockClass.name] = blockClass

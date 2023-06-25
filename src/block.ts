@@ -16,8 +16,8 @@ export class block {
         if (!block.create && block.element) this.element = block.element
     }
     public getInput() {
-        Object.keys(this.inputs).forEach((id: string) => {
-            this.inputs[id].element = this.element.querySelector(`[id="input-${id}"]`);
+        Object.keys(this.inputs).forEach((id: keyof typeof this.inputs) => {
+            this.inputs[id].element = this.element.querySelector(`[id="input-${id}"]`)!;
         });
         this.draggableBlock = Array.from(this.element.querySelectorAll(`[drag="true"]`));
         this.displayElement = this.element.querySelector(`[id="block-display"]`) as HTMLElement

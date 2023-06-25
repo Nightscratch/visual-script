@@ -66,9 +66,6 @@
 
   <body>
     <div id="blocklyDiv" class="block-space"></div>
-    <button id="c">copy</button>
-    <button id="d">delete</button>
-
     <script type="module">
       import { VisualBlock } from './src/index'
       import { moveBlock } from './src/block'
@@ -77,20 +74,10 @@
         element: document.getElementById('blocklyDiv')
       });
       app.registerBlock(moveBlock)
-      let a = new moveBlock({
+      app.addBlock(new moveBlock({
         create: true
-      })
-      app.addBlock(a);
+      }));
 
-
-
-
-      document.getElementById('c').addEventListener('click',()=>{
-        a.copy()
-      })
-      document.getElementById('d').addEventListener('click',()=>{
-        a.delete()
-      })
       window.app= app
     </script>
   </body>
