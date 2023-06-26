@@ -10,12 +10,13 @@
       .block {
         position: absolute;
       }
-      #block-display{
+
+      #block-display {
+        position: relative;
         display: inline-flex;
         background-color: rgb(76, 151, 255);
         border: 2px solid rgb(51, 115, 204);
         border-radius: 5px;
-        align-items: center;
       }
 
       .input-block {
@@ -51,12 +52,14 @@
         background-color: transparent;
         margin-top: -2px;
       }
+
       .block-text,
       body {
         margin: 0;
         padding: 0;
       }
-      .block-text{
+
+      .block-text {
         color: white;
         font-size: 0.8em;
         padding: 2px;
@@ -78,7 +81,7 @@
         create: true
       }));
 
-      window.app= app
+      window.app = app
     </script>
   </body>
 

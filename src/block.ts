@@ -2,7 +2,12 @@ import { newBlock, blockInput, initOption } from "./interface";
 import { solitary } from "./utils/drag";
 import measureDistance from "./utils/measure-distance";
 import { VisualBlock } from "./index";
-
+interface BlockInputData {
+    down: boolean;
+    dis: number;
+    id: string;
+    block: block;
+}
 export class block {
     public element: HTMLElement
     public inputs: { [id: string]: blockInput }
@@ -24,22 +29,30 @@ export class block {
     }
     public dragEnd(): void {
         console.log("dragEnd");
-        interface BlockInputData {
-            dis: number;
-            id: string;
-            block: block;
-        }
         const distance: BlockInputData[] = [];
-        this.space.blocks.forEach((block) => {
-            if (block !== this) {
-                Object.entries(block.inputs).forEach(([id, input]) => {
+        this.space.blocks.forEach((targetBlock) => {
+            if (targetBlock != this) {
+                Object.entries(targetBlock.inputs).forEach(([id, input]) => {
                     const dis = measureDistance(input.element as HTMLElement, this.element);
-                    if (dis < 25) {
+                    if (dis.dis < 25) {
                         distance.push({
-                            dis,
+                            dis: dis.dis,
                             id,
-                            block,
+                            block: targetBlock,
+                            down: false
                         });
+                    } else {
+                        //自上向下
+                        if (id == "next" && !input.value) {
+                            if (Math.abs(dis.e1.left - dis.e2.left) < 25 && Math.abs(dis.e2.bottom - dis.e1.top) < 25) {
+                                distance.push({
+                                    dis: dis.dis,
+                                    id,
+                                    block: targetBlock,
+                                    down: true
+                                });
+                            }
+                        }
                     }
                 });
             }
@@ -48,10 +61,9 @@ export class block {
             const target = distance.reduce((smallest: BlockInputData, current: BlockInputData) => {
                 return current.dis < smallest.dis ? current : smallest;
             });
-            this.handleConnect(target.id, target.block.inputs[target.id], target.block);
+            this.handleConnect(target.block.inputs[target.id], target);
         }
     }
-
     public dragStart(): void {
         this.element.classList.remove('input-block');
         this.space.element.appendChild(this.element);
@@ -59,7 +71,6 @@ export class block {
             this.parentInput.value = null
         }
     }
-
     // a 将该积木脱离输入
     private solitary(): void {
         if (this.parentInput) {
@@ -84,7 +95,11 @@ export class block {
         }
         return sblock;
     }
-    private handleConnect(inputId: string, input: blockInput, block: block) {
+    private handleConnect(input: blockInput, target: BlockInputData): void {
+        if (target.down && target.block != this) {
+            target.block.enterInput(this.inputs.next)
+            return ;
+        }
         let insert: block | null = null;
         if (input.value) {
             insert = input.value as block;
@@ -100,7 +115,6 @@ export class block {
         return new this.space.blockClasses[this.constructor.name]({ create: true });
     }
     public copy(first = true): block {
-        console.log("复制积木", this.element, this.inputs)
         if (first) {
             this.parentInput = null
         }

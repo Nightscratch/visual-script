@@ -10,13 +10,35 @@
       .block {
         position: absolute;
       }
-      #block-display{
+
+      #block-display {
+        position: relative;
         display: inline-flex;
         background-color: rgb(76, 151, 255);
-        border: 2px solid rgb(51, 115, 204);
+        border: 20000px solid rgb(51, 115, 204);
         border-radius: 5px;
-        align-items: center;
+        overflow: hidden;
       }
+      
+      #block-display::before,
+      #block-display::after {
+        content: "";
+        position: absolute;
+        width: 100%;
+        height: 50px;
+        background-color: rgb(76, 151, 255);
+      }
+      
+      #block-display::before {
+        top: -25px;
+        border-radius: 5px 5px 0 0;
+      }
+      
+      #block-display::after {
+        bottom: -25px;
+        border-radius: 0 0 5px 5px;
+      }
+      
 
       .input-block {
         position: static;
@@ -51,12 +73,14 @@
         background-color: transparent;
         margin-top: -2px;
       }
+
       .block-text,
       body {
         margin: 0;
         padding: 0;
       }
-      .block-text{
+
+      .block-text {
         color: white;
         font-size: 0.8em;
         padding: 2px;
@@ -67,7 +91,7 @@
 
   <body>
     <div id="blocklyDiv" class="block-space"></div>
-    
+
   </body>
 
 </html>
