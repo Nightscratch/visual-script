@@ -1,4 +1,4 @@
-import { newBlock, blockInput } from "./type";
+import { newBlock, blockInput } from "./interface";
 import { solitary } from "./utils/drag";
 import measureDistance from "./utils/measure-distance";
 import { VisualBlock } from "./index";
@@ -13,11 +13,11 @@ interface BlockInputData {
 export class Block {
     public element: HTMLElement
     public inputs: { [id: string]: blockInput }
-    public space: VisualBlock
+    public space: VisualBlock 
     public parentInput: blockInput | null = null
     public draggableBlock: HTMLElement[] = []
     public displayElement: HTMLElement
-    public blockName: string
+    public blockName: string 
 
     constructor(block: newBlock) {
         if (!block.create && block.element) this.element = block.element
