@@ -6,16 +6,12 @@
     "module": "ESNext",
     "moduleResolution": "node",
     "strict": false,
-    "esModuleInterop": true,
-    "noImplicitOverride": true,
-    "noUnusedLocals": true,
-    "useUnknownInCatchVariables": false,
     "declaration": true,
-    "declarationDir": "dist"
+    "emitDeclarationOnly": true,
+    "outFile": "dist/index.d.ts"
   },
   "include": [
-    "src/**/*.ts",
-    "src/**/*.d.ts"
+    "src/index.ts",
   ],
   "exclude": [
     "node_modules"

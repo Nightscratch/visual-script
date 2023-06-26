@@ -69,14 +69,13 @@
   <body>
     <div id="blocklyDiv" class="block-space"></div>
     <script type="module">
-      import { VisualBlock } from './src/index'
-      import { MoveBlock } from './src/block'
+      import { VisualBlock,blocks } from './src/index'
 
       let app = new VisualBlock({
         element: document.getElementById('blocklyDiv')
       });
-      app.registerBlock(MoveBlock)
-      app.addBlock(new MoveBlock({
+      app.registerBlock(blocks.MoveBlock)
+      app.addBlock(new blocks.MoveBlock({
         create: true
       }));
 
