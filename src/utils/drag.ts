@@ -1,4 +1,4 @@
-import { block } from "../block";
+import { Block } from "../block";
 import offset from "./elem-offset";
 
 
@@ -10,7 +10,7 @@ export function solitary(element: HTMLElement, space: HTMLElement) {
 }
 
 export function draggable(
-    newblock: block,
+    newblock: Block,
 ): void {
     let isDragging: boolean = false;
     let offsetX: number = 0;

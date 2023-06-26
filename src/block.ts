@@ -1,14 +1,16 @@
-import { newBlock, blockInput, initOption } from "./interface";
+import { newBlock, blockInput } from "./interface";
 import { solitary } from "./utils/drag";
 import measureDistance from "./utils/measure-distance";
 import { VisualBlock } from "./index";
+
 interface BlockInputData {
-    down: block | null;
-    dis: number;
-    id: string;
-    block: block;
+    down: Block | null;
+    distance: number;
+    inputId: string;
+    block: Block;
 }
-export class block {
+
+export class Block {
     public element: HTMLElement
     public inputs: { [id: string]: blockInput }
     public space: VisualBlock
@@ -28,42 +30,39 @@ export class block {
         this.displayElement = this.element.querySelector(`[id="block-display"]`) as HTMLElement
     }
     public dragEnd(): void {
-        const smallestChild  = this.getSmallestChild()
-        const distance: BlockInputData[] = [];
-        this.space.blocks.forEach((targetBlock) => {
+        const smallestChild = this.getSmallestChild();
+        const captureInput: BlockInputData[] = [];
+
+        for (const targetBlock of this.space.blocks) {
             if (targetBlock != this) {
-                Object.entries(targetBlock.inputs).forEach(([id, input]) => {
+                for (const [inputId, input] of Object.entries(targetBlock.inputs)) {
                     const dis = measureDistance(input.element as HTMLElement, this.element);
                     if (dis.dis < 25) {
-                        distance.push({
-                            dis: dis.dis,
-                            id,
+                        captureInput.push({
+                            inputId: inputId,
+                            distance: dis.dis,
                             block: targetBlock,
                             down: null
                         });
-                    } else {
-                        //自上向下
-                        const dis = measureDistance(targetBlock.element, smallestChild.element);
-                        if (id == "next" && !targetBlock.parentInput) {
-                            if (Math.abs(dis.e1.left - dis.e2.left) < 25 && Math.abs(dis.e1.top - dis.e2.bottom) < 25) {
-                                console.log('找到下接口')
-                                distance.push({
-                                    dis: dis.dis,
-                                    id,
-                                    block: targetBlock,
-                                    down: smallestChild
-                                });
-                            }
+                    } else if (inputId === "next" && !targetBlock.parentInput) {
+                        const dis2 = measureDistance(targetBlock.element, smallestChild.element);
+                        if (Math.abs(dis2.e1.left - dis2.e2.left) < 25 && Math.abs(dis2.e1.top - dis2.e2.bottom) < 25) {
+                            captureInput.push({
+                                inputId: inputId,
+                                distance: dis.dis,
+                                block: targetBlock,
+                                down: smallestChild
+                            });
                         }
                     }
-                });
+                }
             }
-        });
-        if (distance.length > 0) {
-            const target = distance.reduce((smallest: BlockInputData, current: BlockInputData) => {
-                return current.dis < smallest.dis ? current : smallest;
+        }
+        if (captureInput.length > 0) {
+            const target = captureInput.reduce((smallest: BlockInputData, current: BlockInputData) => {
+                return current.distance < smallest.distance ? current : smallest;
             });
-            this.handleConnect(target.block.inputs[target.id], target);
+            this.handleConnect(target.block.inputs[target.inputId], target);
         }
     }
     public dragStart(): void {
@@ -84,7 +83,6 @@ export class block {
     }
     // 将该积木放入输入
     private enterInput(input: blockInput): void {
-        console.log("enterInput",input,this.element)
         input.value = this;
         (input.element as HTMLElement).appendChild(this.element);
         this.element.classList.add('input-block');
@@ -92,7 +90,7 @@ export class block {
     }
     private getSmallestChild(): this {
         let sblock: this = this;
-        while (sblock.inputs.next.value instanceof block) {
+        while (sblock.inputs.next.value instanceof Block) {
             sblock = sblock.inputs.next.value as this;
         }
         return sblock;
@@ -100,31 +98,31 @@ export class block {
     private handleConnect(input: blockInput, target: BlockInputData): void {
         if (target.down && target.block != this) {
             target.block.enterInput(target.down.inputs.next)
-        }else{
-            let insert: block | null = null;
+        } else {
+            let insert: Block | null = null;
             if (input.value) {
-                insert = input.value as block;
+                insert = input.value as Block;
                 insert.solitary();
             }
             this.enterInput(input)
             if (insert && this.inputs.next) {
-                (insert as block).enterInput(this.getSmallestChild().inputs.next)
+                (insert as Block).enterInput(this.getSmallestChild().inputs.next)
             }
         }
     }
-    public clone(): block {
+    public clone(): Block {
         return new this.space.blockClasses[this.constructor.name]({ create: true });
     }
-    public copy(first = true): block {
+    public copy(first = true): Block {
         if (first) {
             this.parentInput = null
         }
-        let clone: block = this.clone()
+        let clone: Block = this.clone()
         this.space.addBlock(clone)
         Object.keys(this.inputs).forEach(inputId => {
-            if (this.inputs[inputId].value instanceof block) {
+            if (this.inputs[inputId].value instanceof Block) {
                 console.log(this.inputs[inputId])
-                let inputClone: block = (this.inputs[inputId].value as block).copy(false);
+                let inputClone: Block = (this.inputs[inputId].value as Block).copy(false);
                 clone.inputs[inputId].value = inputClone;
                 inputClone.enterInput(clone.inputs[inputId]);
             } else {
@@ -143,14 +141,14 @@ export class block {
         }
         this.space.removeBlock(this)
         Object.keys(this.inputs).forEach(inputId => {
-            if (this.inputs[inputId].value instanceof block) {
-                (this.inputs[inputId].value as block).delete(false)
+            if (this.inputs[inputId].value instanceof Block) {
+                (this.inputs[inputId].value as Block).delete(false)
             }
         });
     }
 }
 
-export class moveBlock extends block {
+export class MoveBlock extends Block {
     constructor(block: newBlock) {
         super(block)
         this.inputs = {

@@ -30,9 +30,8 @@
       .block-space {
         background-color: antiquewhite;
         position: relative;
-        width: 800px;
-        height: 400px;
-        overflow-y: scroll;
+        width: 100vw;
+        height: 100vh;
         margin: 0;
       }
 
@@ -71,13 +70,13 @@
     <div id="blocklyDiv" class="block-space"></div>
     <script type="module">
       import { VisualBlock } from './src/index'
-      import { moveBlock } from './src/block'
+      import { MoveBlock } from './src/block'
 
       let app = new VisualBlock({
         element: document.getElementById('blocklyDiv')
       });
-      app.registerBlock(moveBlock)
-      app.addBlock(new moveBlock({
+      app.registerBlock(MoveBlock)
+      app.addBlock(new MoveBlock({
         create: true
       }));
 

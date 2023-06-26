@@ -1,4 +1,4 @@
-import { block } from "./block";
+import { Block } from "./block";
 
 export interface initOption {
     element:HTMLElement,
@@ -15,6 +15,6 @@ export interface newBlock {
 
 export interface blockInput {
     type:string,
-    value: block | string | null,
+    value: Block | string | null,
     element: HTMLElement | null,
 }

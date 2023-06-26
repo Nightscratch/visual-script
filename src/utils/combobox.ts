@@ -1,6 +1,6 @@
-import { block } from "../block";
+import { Block } from "../block";
 
-export const addDropdown = (newblock: block) => {
+export const addDropdown = (newblock: Block) => {
   let dropdown: HTMLElement | null = null;
 
   newblock.element.addEventListener('contextmenu', (event: MouseEvent) => {
