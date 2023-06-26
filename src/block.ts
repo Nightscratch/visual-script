@@ -17,7 +17,7 @@ export class Block {
     public parentInput: blockInput | null = null
     public draggableBlock: HTMLElement[] = []
     public displayElement: HTMLElement
-    public blockName: string 
+    public blockName: string ;
 
     constructor(block: newBlock) {
         if (!block.create && block.element) this.element = block.element
@@ -73,7 +73,7 @@ export class Block {
         }
         this.parentInput = null;
     }
-    // a 将该积木脱离输入
+    // 将该积木脱离输入
     private solitary(): void {
         if (this.parentInput) {
             this.parentInput.value = null
