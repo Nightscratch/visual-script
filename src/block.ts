@@ -89,12 +89,9 @@ export class block {
         (input.element as HTMLElement).appendChild(this.element);
         this.element.classList.add('input-block');
         this.parentInput = input;
-        
-
     }
     private getSmallestChild(): this {
         let sblock: this = this;
-
         while (sblock.inputs.next.value instanceof block) {
             sblock = sblock.inputs.next.value as this;
         }
