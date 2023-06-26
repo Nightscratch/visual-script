@@ -3,7 +3,7 @@ import { solitary } from "./utils/drag";
 import measureDistance from "./utils/measure-distance";
 import { VisualBlock } from "./index";
 interface BlockInputData {
-    down: boolean;
+    down: block | null;
     dis: number;
     id: string;
     block: block;
@@ -28,7 +28,7 @@ export class block {
         this.displayElement = this.element.querySelector(`[id="block-display"]`) as HTMLElement
     }
     public dragEnd(): void {
-        console.log("dragEnd");
+        const smallestChild  = this.getSmallestChild()
         const distance: BlockInputData[] = [];
         this.space.blocks.forEach((targetBlock) => {
             if (targetBlock != this) {
@@ -39,17 +39,19 @@ export class block {
                             dis: dis.dis,
                             id,
                             block: targetBlock,
-                            down: false
+                            down: null
                         });
                     } else {
                         //自上向下
-                        if (id == "next" && !input.value) {
-                            if (Math.abs(dis.e1.left - dis.e2.left) < 25 && Math.abs(dis.e2.bottom - dis.e1.top) < 25) {
+                        const dis = measureDistance(targetBlock.element, smallestChild.element);
+                        if (id == "next" && !targetBlock.parentInput) {
+                            if (Math.abs(dis.e1.left - dis.e2.left) < 25 && Math.abs(dis.e1.top - dis.e2.bottom) < 25) {
+                                console.log('找到下接口')
                                 distance.push({
                                     dis: dis.dis,
                                     id,
                                     block: targetBlock,
-                                    down: true
+                                    down: smallestChild
                                 });
                             }
                         }
@@ -70,6 +72,7 @@ export class block {
         if (this.parentInput) {
             this.parentInput.value = null
         }
+        this.parentInput = null;
     }
     // a 将该积木脱离输入
     private solitary(): void {
@@ -81,10 +84,12 @@ export class block {
     }
     // 将该积木放入输入
     private enterInput(input: blockInput): void {
+        console.log("enterInput",input,this.element)
         input.value = this;
         (input.element as HTMLElement).appendChild(this.element);
         this.element.classList.add('input-block');
         this.parentInput = input;
+        
 
     }
     private getSmallestChild(): this {
@@ -97,19 +102,18 @@ export class block {
     }
     private handleConnect(input: blockInput, target: BlockInputData): void {
         if (target.down && target.block != this) {
-            target.block.enterInput(this.inputs.next)
-            return ;
+            target.block.enterInput(target.down.inputs.next)
+        }else{
+            let insert: block | null = null;
+            if (input.value) {
+                insert = input.value as block;
+                insert.solitary();
+            }
+            this.enterInput(input)
+            if (insert && this.inputs.next) {
+                (insert as block).enterInput(this.getSmallestChild().inputs.next)
+            }
         }
-        let insert: block | null = null;
-        if (input.value) {
-            insert = input.value as block;
-            insert.solitary();
-        }
-        this.enterInput(input)
-        if (insert && this.inputs.next) {
-            (insert as block).enterInput(this.getSmallestChild().inputs.next)
-        }
-
     }
     public clone(): block {
         return new this.space.blockClasses[this.constructor.name]({ create: true });
