@@ -83,7 +83,7 @@ export class Block {
     }
     // 将该积木放入输入
     private enterInput(input: blockInput): void {
-        input.value = this;
+        (input.value as unknown as Block) = this;
         (input.element as HTMLElement).appendChild(this.element);
         this.element.classList.add('input-block');
         this.parentInput = input;
@@ -91,7 +91,7 @@ export class Block {
     private getSmallestChild(): this {
         let sblock: this = this;
         while (sblock.inputs.next.value instanceof Block) {
-            sblock = sblock.inputs.next.value as this;
+            sblock = sblock.inputs.next.value as unknown as this;
         }
         return sblock;
     }
@@ -101,7 +101,7 @@ export class Block {
         } else {
             let insert: Block | null = null;
             if (input.value) {
-                insert = input.value as Block;
+                insert = input.value as unknown as Block;
                 insert.solitary();
             }
             this.enterInput(input)
@@ -122,8 +122,8 @@ export class Block {
         Object.keys(this.inputs).forEach(inputId => {
             if (this.inputs[inputId].value instanceof Block) {
                 console.log(this.inputs[inputId])
-                let inputClone: Block = (this.inputs[inputId].value as Block).copy(false);
-                clone.inputs[inputId].value = inputClone;
+                let inputClone: Block = (this.inputs[inputId].value as unknown as Block).copy(false);
+                (clone.inputs[inputId].value as unknown as Block) = inputClone;
                 inputClone.enterInput(clone.inputs[inputId]);
             } else {
                 clone.inputs[inputId].value = this.inputs[inputId].value;
@@ -142,7 +142,7 @@ export class Block {
         this.space.removeBlock(this)
         Object.keys(this.inputs).forEach(inputId => {
             if (this.inputs[inputId].value instanceof Block) {
-                (this.inputs[inputId].value as Block).delete(false)
+                (this.inputs[inputId].value as unknown as Block).delete(false)
             }
         });
     }
