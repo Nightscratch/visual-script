@@ -1,4 +1,4 @@
-import { initOption } from "./lib";
+import { initOption } from "./type";
 import { draggable } from "./utils/drag";
 import { addDropdown } from "./utils/combobox"
 import { Block } from "./block";

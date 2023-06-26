@@ -1,4 +1,4 @@
-import { newBlock, blockInput } from "./lib";
+import { newBlock, blockInput } from "./type";
 import { solitary } from "./utils/drag";
 import measureDistance from "./utils/measure-distance";
 import { VisualBlock } from "./index";
