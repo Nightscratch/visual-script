@@ -119,8 +119,19 @@ export class block {
 
         return clone
     }
-    public delete(): void {
-
+    public delete(first = true): void {
+        if (first) {
+            this.element.remove()
+        }
+        if (this.parentInput) {
+            this.parentInput.value = null
+        }
+        this.space.removeBlock(this)
+        Object.keys(this.inputs).forEach(inputId => {
+            if (this.inputs[inputId].value instanceof block) {
+                (this.inputs[inputId].value as block).delete(false)
+            }
+        });
     }
 }
 

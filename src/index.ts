@@ -18,7 +18,11 @@ export class VisualBlock {
         draggable(newBlock);
         addDropdown(newBlock);
     }
+    removeBlock(delBlock: block): void{
+        this.blocks.splice(this.blocks.indexOf(delBlock),1)
+    }
     registerBlock(blockClass: any) {
         this.blockClasses[blockClass.name] = blockClass
     }
+    
 }
