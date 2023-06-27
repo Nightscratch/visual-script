@@ -84,19 +84,17 @@ export class Block {
     }
     // 将该积木放入输入
     private enterInput(input: blockInput): void {
-        if (input.value instanceof Block) {
-            input.value = this;
-            (input.element as HTMLElement).appendChild(this.element);
-            this.element.classList.add('input-block');
-            this.parentInput = input;            
-        }
+        (input.value as unknown as Block) = this;
+        (input.element as HTMLElement).appendChild(this.element);
+        this.element.classList.add('input-block');
+        this.parentInput = input;
     }
-    private getSmallestChild(): Block {
-        let smallestBlock: Block = this;
-        while (smallestBlock.inputs.next.value instanceof Block) {
-            smallestBlock = smallestBlock.inputs.next.value as unknown as Block;
+    private getSmallestChild(): this {
+        let sblock: this = this;
+        while (sblock.inputs.next.value instanceof Block) {
+            sblock = sblock.inputs.next.value as unknown as this;
         }
-        return smallestBlock;
+        return sblock;
     }
     private handleConnect(input: blockInput, target: BlockConnectType): void {
         if (target.down && target.block != this) {
