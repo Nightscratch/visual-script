@@ -3,7 +3,7 @@ import { solitary } from "./utils/drag";
 import measureDistance from "./utils/measure-distance";
 import { VisualBlock } from "./index";
 
-interface BlockInputData {
+interface BlockConnectType {
     down: Block | null;
     distance: number;
     inputId: string;
@@ -31,7 +31,7 @@ export class Block {
     }
     public dragEnd(): void {
         const smallestChild = this.getSmallestChild();
-        const captureInput: BlockInputData[] = [];
+        const captureInput: BlockConnectType[] = [];
 
         for (const targetBlock of this.space.blocks) {
             if (targetBlock != this) {
@@ -59,7 +59,7 @@ export class Block {
             }
         }
         if (captureInput.length > 0) {
-            const target = captureInput.reduce((smallest: BlockInputData, current: BlockInputData) => {
+            const target = captureInput.reduce((smallest: BlockConnectType, current: BlockConnectType) => {
                 return current.distance < smallest.distance ? current : smallest;
             });
             this.handleConnect(target.block.inputs[target.inputId], target);
@@ -95,7 +95,7 @@ export class Block {
         }
         return sblock;
     }
-    private handleConnect(input: blockInput, target: BlockInputData): void {
+    private handleConnect(input: blockInput, target: BlockConnectType): void {
         if (target.down && target.block != this) {
             target.block.enterInput(target.down.inputs.next)
         } else {
