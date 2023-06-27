@@ -10,6 +10,9 @@ export class VisualBlock {
 
     constructor(option: initOption) {
         this.element = option.element
+
+        // 注册积木
+        this.registerBlock(blocks.MoveBlock)
     }
     addBlock(newBlock: blocks.Block): void {
         newBlock.space = this;
@@ -26,5 +29,3 @@ export class VisualBlock {
     }
     
 }
-
-export { blocks };
