@@ -27,5 +27,8 @@ export class VisualBlock {
     public registerBlock(blockClass: any) {
         this.blockClasses[blockClass.name] = blockClass
     }
+    public toJson(){
+        
+    }
     
 }
