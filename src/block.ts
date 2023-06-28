@@ -55,9 +55,12 @@ export abstract class Block {
                             block: targetBlock,
                             down: null
                         });
-                    } else if (inputId === "next" && !targetBlock.parentInput) {
-                        const dis2 = measureDistance(targetBlock.element, smallestChild.element);
-                        if (Math.abs(dis2.e1.left - dis2.e2.left) < 25 && Math.abs(dis2.e1.top - dis2.e2.bottom) < 25) {
+                    }
+                }
+                for (const [inputId, input] of Object.entries(this.inputs)) {
+                    if (["next","method"].includes(input.type) && !targetBlock.parentInput) {
+                        let dis = measureDistance(targetBlock.element, this.inputs[inputId].element!);
+                        if (Math.abs(dis.e1.left - dis.e2.left) < 25 && Math.abs(dis.e1.top - dis.e2.bottom) < 25) {
                             captureInput.push({
                                 inputId: inputId,
                                 distance: dis.dis,
@@ -102,8 +105,9 @@ export abstract class Block {
         return sblock;
     }
     private handleConnect(input: blockInput, target: BlockConnectType): void {
+        debugger
         if (target.down && target.block != this) {
-            target.block.enterInput(target.down.inputs.next)
+            target.block.enterInput(target.down.inputs[target.inputId])
         } else {
             let insert: Block | null = null;
             if (input.value) {
@@ -219,7 +223,12 @@ export class IfBlock extends Block {
                 value: null,
                 element: null,
             },
-            "method": {
+            "if": {
+                type: "method",
+                value: null,
+                element: null,
+            },
+            "else": {
                 type: "method",
                 value: null,
                 element: null,
@@ -244,13 +253,15 @@ export class IfBlock extends Block {
                     <div class="block-input" id="input-condition"></div>
                     <p class="block-text" drag="true">那么</p>
                 </div>
-                <div class="block-block-input" id="input-method"></div>
+                <div class="block-block-input" id="input-if"></div>
                 
+                <div class="block-line">
+                    <p class="block-text" drag="true">否则</p>
+                </div>
+                <div class="block-block-input" id="input-else"></div>
                 <div class="block-line">
                     <p class="block-text" drag="true">end</p>
                 </div>
-                
-                
             </div>
             <div class="next-input" id="input-next"></div>
             `.replace(' ', '')
