@@ -76,8 +76,8 @@
     
     <div id="blocklyDiv" class="block-space"></div>
     <p style="position:absolute;top:0;margin:0;right:0">右键积木复制或删除</p>
-    <button style="position:absolute;top:25px;right:0">保存</button>
-    <button style="position:absolute;top:25px;right:50px">加载</button>
+    <button id="save" style="position:absolute;top:25px;right:10px">保存</button>
+    <button id="load" style="position:absolute;top:25px;right:50px">加载</button>
 
     <script type="module">
       import { VisualBlock } from './src/index'
@@ -91,6 +91,19 @@
       app.addBlock(new app.blockClasses.IfBlock({
         create: true
       }));
+      document.getElementById('save').addEventListener('click',()=>{
+        app.save()
+        .then((data)=>{
+          console.log(data)
+        })
+        
+      })
+      document.getElementById('load').addEventListener('click',()=>{
+        app.load(prompt('输入作品json'))
+        .then(()=>{
+          alert("加载完成")
+        })
+      })
 
       window.app = app
     </script>

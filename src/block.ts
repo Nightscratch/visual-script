@@ -1,5 +1,6 @@
-import { newBlock, blockInput } from "./interface";
+import { newBlock, blockInput, blockJson } from "./interface";
 import { elementSolitary, getBoundingClientRect } from "./utils/drag";
+import { blockInputType } from "./input";
 import measureDistance from "./utils/measure-distance";
 import { VisualBlock } from "./index";
 
@@ -144,12 +145,15 @@ export abstract class Block {
         });
         if (first) {
             cloneElement.classList.remove('input-block');
-            this.parentInput = null;
+            //this.parentInput = null;
             const pos = getBoundingClientRect(this.element, this.space.element)
             cloneElement.style.left = `${pos.left + 25}px`;
             cloneElement.style.top = `${pos.top + 25}px`
         };
         let block = new this.space.blockClasses[this.constructor.name]({ create: false, element: cloneElement });
+        if (first) {
+            block.parentInput = null
+        }
         /*
         另外一种方法
         let block = new this.space.blockClasses[this.constructor.name]({ create: true });
@@ -186,6 +190,41 @@ export abstract class Block {
                 (this.inputs[inputId].value as unknown as Block).delete(false)
             }
         });
+    }
+    public toJson():blockJson{
+        let json:blockJson = {
+            type:this.constructor.name,
+            inputs:{}
+        }
+        Object.keys(this.inputs).forEach(inputId => {
+            if (this.inputs[inputId].value instanceof Block) {
+                json.inputs[inputId] = { 
+                    type:'block',
+                    blockType:this.constructor.name,
+                    value:(this.inputs[inputId].value as Block).toJson()
+                };
+            } else {
+                json.inputs[inputId] = {
+                    type:'text',
+                    value:this.inputs[inputId].value as string
+                };
+            }
+        });
+        return json
+    }
+    public loadInputs(blockData:blockJson,first:boolean = false):Block{
+        for (const [inputId,input] of Object.entries(blockData.inputs)) {
+            if (input.type == 'block') {
+                let newBlock = new this.space.blockClasses[input.blockType!]({ create: true });
+                this.space.addBlock(newBlock)
+                if (input.value) {
+                    newBlock.loadInputs(input.value)
+                }
+            } else {
+                
+            }
+        }
+        return this
     }
 }
 

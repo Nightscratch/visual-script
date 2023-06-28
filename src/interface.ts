@@ -26,3 +26,12 @@ export interface BlockInputData {
     inputId: string;
     block: Block;
 }
+
+export interface blockJson{
+    type:string,
+    inputs:{[id: string]:{
+        type: 'text' | 'block'
+        blockType?: string,
+        value : blockJson | string | null
+    }}
+}
