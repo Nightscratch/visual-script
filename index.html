@@ -11,7 +11,7 @@
         position: absolute;
       }
 
-      #block-display {
+      .block-line {
         position: relative;
         display: inline-flex;
         background-color: rgb(76, 151, 255);
@@ -46,6 +46,13 @@
         background-color: aliceblue;
         margin: 2px;
       }
+      .block-block-input{
+        min-height: 15px;
+        min-width: 25px;
+        border-left: 2px dashed salmon;
+        padding:0px 5px;
+        margin-left: 5px;
+      }
 
       .next-input {
         background-color: transparent;
@@ -77,6 +84,9 @@
         element: document.getElementById('blocklyDiv')
       });
       app.addBlock(new app.blockClasses.MoveBlock({
+        create: true
+      }));
+      app.addBlock(new app.blockClasses.IfBlock({
         create: true
       }));
 

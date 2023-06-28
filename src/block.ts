@@ -17,14 +17,9 @@ export abstract class Block {
     public parentInput: blockInput | null = null
     public draggableBlock: HTMLElement[] = []
     public displayElement: HTMLElement
-    public blockName: string;
-
     constructor(block: newBlock) {
         if (!block.create && block.element) {
             this.element = block.element
-        }
-        if (block.blockName) {
-            this.blockName = block.blockName
         }
         if (block.inputs) {
             this.inputs = block.inputs
@@ -91,10 +86,10 @@ export abstract class Block {
     }
     // 将该积木放入输入
     private enterInput(input: blockInput): void {
-        input.value = this;
         (input.element as HTMLElement).appendChild(this.element);
         this.element.classList.add('input-block');
         this.parentInput = input;
+        input.value = this as Block;
     }
     private getSmallestChild(): this {
         let sblock: this = this;
@@ -133,7 +128,7 @@ export abstract class Block {
         });
         if (first) {
             cloneElement.classList.remove('input-block');
-            this.detachFromParent()
+            this.parentInput = null;
             const pos = getBoundingClientRect(this.element, this.space.element)
             cloneElement.style.left = `${pos.left + 25}px`;
             cloneElement.style.top = `${pos.top + 25}px`
@@ -145,6 +140,7 @@ export abstract class Block {
     public copy(first = true): Block {
         let clone: Block = this.clone(first)
         this.space.addBlock(clone)
+        
         Object.keys(this.inputs).forEach(inputId => {
             if (this.inputs[inputId].value instanceof Block) {
                 console.log(this.inputs[inputId])
@@ -177,7 +173,12 @@ export abstract class Block {
 export class MoveBlock extends Block {
     constructor(block: newBlock) {
         block.inputs = {
-            "step": {
+            "y": {
+                type: "input",
+                value: null,
+                element: null,
+            },
+            "x": {
                 type: "input",
                 value: null,
                 element: null,
@@ -188,7 +189,43 @@ export class MoveBlock extends Block {
                 element: null,
             }
         }
-        block.blockName = 'moveBlock'
+        super(block)
+    }
+    public create() {
+        this.element = document.createElement('div')
+        this.element.setAttribute('class', 'block')
+        this.element.innerHTML =
+            `
+            <div id="block-display" drag="true" class="block-line">
+                <p class="block-text" drag="true">移动到</p>
+                <div class="block-input" id="input-x"></div>
+                <div class="block-input" id="input-y"></div>
+            </div>
+            <div class="next-input" id="input-next"></div>
+            `.replace(' ', '')
+    }
+}
+
+
+export class IfBlock extends Block {
+    constructor(block: newBlock) {
+        block.inputs = {
+            "condition": {
+                type: "input",
+                value: null,
+                element: null,
+            },
+            "method": {
+                type: "input",
+                value: null,
+                element: null,
+            },
+            "next": {
+                type: "next",
+                value: null,
+                element: null,
+            }
+        }
         super(block)
     }
     public create() {
@@ -197,8 +234,18 @@ export class MoveBlock extends Block {
         this.element.innerHTML =
             `
             <div id="block-display" drag="true">
-                <p class="block-text" drag="true">action</p>
-                <div class="block-input" id="input-step"></div>
+                <div class="block-line">
+                    <p class="block-text" drag="true">如果</p>
+                    <div class="block-input" id="input-condition"></div>
+                    <p class="block-text" drag="true">那么</p>
+                </div>
+                <div class="block-block-input" id="input-method"></div>
+                
+                <div class="block-line">
+                    <p class="block-text" drag="true">end</p>
+                </div>
+                
+                
             </div>
             <div class="next-input" id="input-next"></div>
             `.replace(' ', '')

@@ -10,21 +10,21 @@ export class VisualBlock {
 
     constructor(option: initOption) {
         this.element = option.element
-
-        // 注册积木
         this.registerBlock(blocks.MoveBlock)
+        this.registerBlock(blocks.IfBlock)
+
     }
-    addBlock(newBlock: blocks.Block): void {
+    public addBlock(newBlock: blocks.Block): void {
         newBlock.space = this;
         this.blocks.push(newBlock);
         this.element.appendChild(newBlock.element);
         draggable(newBlock);
         addDropdown(newBlock);
     }
-    removeBlock(delBlock: blocks.Block): void{
+    public removeBlock(delBlock: blocks.Block): void{
         this.blocks.splice(this.blocks.indexOf(delBlock),1)
     }
-    registerBlock(blockClass: any) {
+    public registerBlock(blockClass: any) {
         this.blockClasses[blockClass.name] = blockClass
     }
     
