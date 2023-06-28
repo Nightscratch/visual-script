@@ -59,13 +59,22 @@ export abstract class Block {
                 }
                 for (const [inputId, input] of Object.entries(this.inputs)) {
                     if (["next","method"].includes(input.type) && !targetBlock.parentInput) {
-                        let dis = measureDistance(targetBlock.element, this.inputs[inputId].element!);
+                        let thisTarget;
+                        let downTarget;
+                        if (input.type=="next") {
+                            thisTarget = smallestChild
+                            downTarget = smallestChild
+                        }else{
+                            thisTarget = this.inputs[inputId]
+                            downTarget = this
+                        }
+                        let dis = measureDistance(targetBlock.element, thisTarget.element!);
                         if (Math.abs(dis.e1.left - dis.e2.left) < 25 && Math.abs(dis.e1.top - dis.e2.bottom) < 25) {
                             captureInput.push({
                                 inputId: inputId,
                                 distance: dis.dis,
                                 block: targetBlock,
-                                down: smallestChild
+                                down: downTarget
                             });
                         }
                     }
@@ -105,7 +114,6 @@ export abstract class Block {
         return sblock;
     }
     private handleConnect(input: blockInput, target: BlockConnectType): void {
-        debugger
         if (target.down && target.block != this) {
             target.block.enterInput(target.down.inputs[target.inputId])
         } else {
@@ -115,7 +123,8 @@ export abstract class Block {
                 insert.solitary();
             }
             this.enterInput(input)
-            if (insert && this.inputs.next) {
+            if (insert && this.defaultInsert) {
+                console.log(this.getSmallestChild());
                 (insert as Block).enterInput(this.getSmallestChild().inputs[this.defaultInsert])
             }
         }
@@ -141,7 +150,10 @@ export abstract class Block {
             cloneElement.style.top = `${pos.top + 25}px`
         };
         let block = new this.space.blockClasses[this.constructor.name]({ create: false, element: cloneElement });
-
+        /*
+        另外一种方法
+        let block = new this.space.blockClasses[this.constructor.name]({ create: true });
+        */
         return block
     }
     public copy(first = true): Block {
@@ -239,7 +251,7 @@ export class IfBlock extends Block {
                 element: null,
             }
         }
-        block.defaultInsert = "method"
+        block.defaultInsert = "if"
         super(block)
     }
     public create() {
