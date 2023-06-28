@@ -17,6 +17,8 @@ export abstract class Block {
     public parentInput: blockInput | null = null
     public draggableBlock: HTMLElement[] = []
     public displayElement: HTMLElement
+    public defaultInsert: string
+
     constructor(block: newBlock) {
         if (!block.create && block.element) {
             this.element = block.element
@@ -27,6 +29,7 @@ export abstract class Block {
         if (!this.element) {
             this.create()
         }
+        this.defaultInsert = block.defaultInsert
         this.getInput()
     }
     abstract create(): void
@@ -109,7 +112,7 @@ export abstract class Block {
             }
             this.enterInput(input)
             if (insert && this.inputs.next) {
-                (insert as Block).enterInput(this.getSmallestChild().inputs.next)
+                (insert as Block).enterInput(this.getSmallestChild().inputs[this.defaultInsert])
             }
         }
     }
@@ -189,6 +192,7 @@ export class MoveBlock extends Block {
                 element: null,
             }
         }
+        block.defaultInsert = "next"
         super(block)
     }
     public create() {
@@ -216,7 +220,7 @@ export class IfBlock extends Block {
                 element: null,
             },
             "method": {
-                type: "input",
+                type: "method",
                 value: null,
                 element: null,
             },
@@ -226,6 +230,7 @@ export class IfBlock extends Block {
                 element: null,
             }
         }
+        block.defaultInsert = "method"
         super(block)
     }
     public create() {

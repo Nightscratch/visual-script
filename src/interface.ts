@@ -11,6 +11,7 @@ export interface newBlock {
     element?: HTMLElement;
     create?: boolean;
     inputs?: { [id: string]: blockInput };
+    defaultInsert:string
 }
 
 export interface blockInput {
