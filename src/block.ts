@@ -190,7 +190,6 @@ export class MoveBlock extends Block {
         }
         block.blockName = 'moveBlock'
         super(block)
-        this.create()
     }
     public create() {
         this.element = document.createElement('div')
