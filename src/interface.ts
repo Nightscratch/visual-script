@@ -10,7 +10,8 @@ export interface initOption {
 export interface newBlock {
     element?: HTMLElement;
     create?: boolean;
-    inputs?: blockInput[];
+    inputs?: { [id: string]: blockInput };
+    blockName?: string
 }
 
 export interface blockInput {

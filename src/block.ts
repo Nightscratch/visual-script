@@ -10,7 +10,7 @@ interface BlockConnectType {
     block: Block;
 }
 
-export class Block {
+export abstract class Block {
     public element: HTMLElement
     public inputs: { [id: string]: blockInput }
     public space: VisualBlock
@@ -23,7 +23,18 @@ export class Block {
         if (!block.create && block.element) {
             this.element = block.element
         }
+        if (block.blockName) {
+            this.blockName = block.blockName
+        }
+        if (block.inputs) {
+            this.inputs = block.inputs
+        }
+        if (!this.element) {
+            this.create()
+        }
+        this.getInput()
     }
+    abstract create(): void
     public getInput() {
         Object.keys(this.inputs).forEach((id: keyof typeof this.inputs) => {
             this.inputs[id].element = this.element.querySelector(`[id="input-${id}"]`)!;
@@ -70,17 +81,11 @@ export class Block {
     public dragStart(): void {
         this.element.classList.remove('input-block');
         this.space.element.appendChild(this.element);
-        if (this.parentInput) {
-            this.parentInput.value = null
-        }
-        this.parentInput = null;
+        this.detachFromParent()
     }
     // 将该积木脱离输入
     private solitary(): void {
-        if (this.parentInput) {
-            this.parentInput.value = null
-        }
-        this.parentInput = null;
+        this.detachFromParent()
         elementSolitary(this.element, this.space.element);
         this.dragStart();
     }
@@ -113,6 +118,12 @@ export class Block {
             }
         }
     }
+    private detachFromParent() {
+        if (this.parentInput) {
+            this.parentInput.value = null
+        }
+        this.parentInput = null;
+    }
     public clone(first: boolean): Block {
         let cloneElement = this.element.cloneNode(true) as HTMLElement
         const inputElements = cloneElement.querySelectorAll('div[id^="input-"]');
@@ -122,22 +133,13 @@ export class Block {
         });
         if (first) {
             cloneElement.classList.remove('input-block');
-            if (this.parentInput) {
-                this.parentInput.value = null
-            }
-            this.parentInput = null;
+            this.detachFromParent()
             const pos = getBoundingClientRect(this.element, this.space.element)
             cloneElement.style.left = `${pos.left + 25}px`;
             cloneElement.style.top = `${pos.top + 25}px`
         };
-        console.log(cloneElement)
         let block = new this.space.blockClasses[this.constructor.name]({ create: false, element: cloneElement });
-        /*if (first) {
-            const pos = getBoundingClientRect(this.element,this.space.element)
-            block.element.style.left = `${pos.left + 25}px`;
-            block.element.style.top = `${pos.top + 25}px`;
-        }*/
-        console.log(block.element)
+
         return block
     }
     public copy(first = true): Block {
@@ -174,8 +176,7 @@ export class Block {
 
 export class MoveBlock extends Block {
     constructor(block: newBlock) {
-        super(block)
-        this.inputs = {
+        block.inputs = {
             "step": {
                 type: "input",
                 value: null,
@@ -187,23 +188,20 @@ export class MoveBlock extends Block {
                 element: null,
             }
         }
-        this.blockName = 'moveBlock'
+        block.blockName = 'moveBlock'
+        super(block)
         this.create()
     }
-    private create() {
-        if (!this.element) {
-            this.element = document.createElement('div')
-            this.element.setAttribute('class', 'block')
-            this.element.innerHTML =
-                `
+    public create() {
+        this.element = document.createElement('div')
+        this.element.setAttribute('class', 'block')
+        this.element.innerHTML =
+            `
             <div id="block-display" drag="true">
                 <p class="block-text" drag="true">action</p>
                 <div class="block-input" id="input-step"></div>
             </div>
             <div class="next-input" id="input-next"></div>
             `.replace(' ', '')
-
-        }
-        this.getInput()
     }
 }
