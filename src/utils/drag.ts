@@ -9,6 +9,14 @@ export function solitary(element: HTMLElement, space: HTMLElement) {
     element.style.top = `${elementRect.top - spaceElementRect.top}px`
 }
 
+export function setCloneSolitary(element: HTMLElement,cloneElement:HTMLElement, space: HTMLElement) {
+    //let elementRect: DOMRect = offset(element)
+    //let spaceElementRect: DOMRect = offset(space)
+    //cloneElement.style.left = `${elementRect.left - spaceElementRect.left + 20}px`
+    //cloneElement.style.top = `${elementRect.top - spaceElementRect.top + 20}px`
+}
+
+
 export function draggable(
     newblock: Block,
 ): void {
@@ -22,6 +30,9 @@ export function draggable(
 
     function handleMouseDown(event: MouseEvent): void {
         if (!newblock.draggableBlock.includes(event.target as HTMLElement)) {
+            return;
+        }
+        if (event.button !== 0) {
             return;
         }
         isDragging = true;

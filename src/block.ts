@@ -13,14 +13,16 @@ interface BlockConnectType {
 export class Block {
     public element: HTMLElement
     public inputs: { [id: string]: blockInput }
-    public space: VisualBlock 
+    public space: VisualBlock
     public parentInput: blockInput | null = null
     public draggableBlock: HTMLElement[] = []
     public displayElement: HTMLElement
-    public blockName: string ;
+    public blockName: string;
 
     constructor(block: newBlock) {
-        if (!block.create && block.element) this.element = block.element
+        if (!block.create && block.element) {
+            this.element = block.element
+        }
     }
     public getInput() {
         Object.keys(this.inputs).forEach((id: keyof typeof this.inputs) => {
@@ -84,7 +86,7 @@ export class Block {
     }
     // 将该积木放入输入
     private enterInput(input: blockInput): void {
-        (input.value as unknown as Block) = this;
+        input.value = this;
         (input.element as HTMLElement).appendChild(this.element);
         this.element.classList.add('input-block');
         this.parentInput = input;
@@ -111,14 +113,21 @@ export class Block {
             }
         }
     }
-    public clone(): Block {
-        return new this.space.blockClasses[this.constructor.name]({ create: true });
+    public clone(first: boolean): Block {
+        let block = new this.space.blockClasses[this.constructor.name]({ create: true });
+        if (first) {
+            const left = parseInt(this.element.style.left, 10);
+            const top = parseInt(this.element.style.top, 10);
+            block.element.style.left = `${left + 25}px`;
+            block.element.style.top = `${top + 25}px`;
+        }
+        return block
     }
     public copy(first = true): Block {
         if (first) {
             this.parentInput = null
         }
-        let clone: Block = this.clone()
+        let clone: Block = this.clone(first)
         this.space.addBlock(clone)
         Object.keys(this.inputs).forEach(inputId => {
             if (this.inputs[inputId].value instanceof Block) {
@@ -168,16 +177,19 @@ export class MoveBlock extends Block {
         this.create()
     }
     private create() {
-        this.element = document.createElement('div')
-        this.element.setAttribute('class', 'block')
-        this.element.innerHTML =
-            `
-        <div id="block-display" drag="true">
-            <p class="block-text" drag="true">action</p>
-            <div class="block-input" id="input-step"></div>
-        </div>
-        <div class="next-input" id="input-next"></div>
-        `.replace(' ', '')
+        if (!this.element) {
+            this.element = document.createElement('div')
+            this.element.setAttribute('class', 'block')
+            this.element.innerHTML =
+                `
+            <div id="block-display" drag="true">
+                <p class="block-text" drag="true">action</p>
+                <div class="block-input" id="input-step"></div>
+            </div>
+            <div class="next-input" id="input-next"></div>
+            `.replace(' ', '')
+
+        }
         this.getInput()
     }
 }
