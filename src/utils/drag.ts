@@ -9,11 +9,15 @@ export function solitary(element: HTMLElement, space: HTMLElement) {
     element.style.top = `${elementRect.top - spaceElementRect.top}px`
 }
 
-export function setCloneSolitary(element: HTMLElement,cloneElement:HTMLElement, space: HTMLElement) {
-    //let elementRect: DOMRect = offset(element)
-    //let spaceElementRect: DOMRect = offset(space)
+export function getBoundingClientRect(element: HTMLElement, space: HTMLElement):{top:number,left:number} {
+    let elementRect: DOMRect = offset(element)
+    let spaceElementRect: DOMRect = offset(space)
     //cloneElement.style.left = `${elementRect.left - spaceElementRect.left + 20}px`
     //cloneElement.style.top = `${elementRect.top - spaceElementRect.top + 20}px`
+    return {
+        top:elementRect.top - spaceElementRect.top,
+        left:elementRect.left - spaceElementRect.left
+    }
 }
 
 

@@ -1,5 +1,5 @@
 import { newBlock, blockInput } from "./interface";
-import { solitary } from "./utils/drag";
+import { solitary,getBoundingClientRect } from "./utils/drag";
 import measureDistance from "./utils/measure-distance";
 import { VisualBlock } from "./index";
 
@@ -116,10 +116,9 @@ export class Block {
     public clone(first: boolean): Block {
         let block = new this.space.blockClasses[this.constructor.name]({ create: true });
         if (first) {
-            const left = parseInt(this.element.style.left, 10);
-            const top = parseInt(this.element.style.top, 10);
-            block.element.style.left = `${left + 25}px`;
-            block.element.style.top = `${top + 25}px`;
+            const pos = getBoundingClientRect(this.element,this.space.element)
+            block.element.style.left = `${pos.left + 25}px`;
+            block.element.style.top = `${pos.top + 25}px`;
         }
         return block
     }
