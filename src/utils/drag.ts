@@ -2,7 +2,7 @@ import { Block } from "../block";
 import offset from "./elem-offset";
 
 
-export function solitary(element: HTMLElement, space: HTMLElement) {
+export function elementSolitary(element: HTMLElement, space: HTMLElement) {
     let elementRect: DOMRect = offset(element)
     let spaceElementRect: DOMRect = offset(space)
     element.style.left = `${elementRect.left - spaceElementRect.left}px`
@@ -43,7 +43,7 @@ export function draggable(
 
         newBlockRect = offset(newblock.element)
         if (newblock.parentInput) {
-            solitary(newblock.element, newblock.space.element)
+            elementSolitary(newblock.element, newblock.space.element)
         }
 
         newblock.displayElement.classList.add("drag-block");

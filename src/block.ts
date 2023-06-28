@@ -1,5 +1,5 @@
 import { newBlock, blockInput } from "./interface";
-import { solitary,getBoundingClientRect } from "./utils/drag";
+import { elementSolitary, getBoundingClientRect } from "./utils/drag";
 import measureDistance from "./utils/measure-distance";
 import { VisualBlock } from "./index";
 
@@ -81,7 +81,7 @@ export class Block {
             this.parentInput.value = null
         }
         this.parentInput = null;
-        solitary(this.element, this.space.element);
+        elementSolitary(this.element, this.space.element);
         this.dragStart();
     }
     // 将该积木放入输入
@@ -114,18 +114,33 @@ export class Block {
         }
     }
     public clone(first: boolean): Block {
-        let block = new this.space.blockClasses[this.constructor.name]({ create: true });
+        let cloneElement = this.element.cloneNode(true) as HTMLElement
+        const inputElements = cloneElement.querySelectorAll('div[id^="input-"]');
+
+        inputElements.forEach((inputElement) => {
+            inputElement.innerHTML = ''
+        });
         if (first) {
+            cloneElement.classList.remove('input-block');
+            if (this.parentInput) {
+                this.parentInput.value = null
+            }
+            this.parentInput = null;
+            const pos = getBoundingClientRect(this.element, this.space.element)
+            cloneElement.style.left = `${pos.left + 25}px`;
+            cloneElement.style.top = `${pos.top + 25}px`
+        };
+        console.log(cloneElement)
+        let block = new this.space.blockClasses[this.constructor.name]({ create: false, element: cloneElement });
+        /*if (first) {
             const pos = getBoundingClientRect(this.element,this.space.element)
             block.element.style.left = `${pos.left + 25}px`;
             block.element.style.top = `${pos.top + 25}px`;
-        }
+        }*/
+        console.log(block.element)
         return block
     }
     public copy(first = true): Block {
-        if (first) {
-            this.parentInput = null
-        }
         let clone: Block = this.clone(first)
         this.space.addBlock(clone)
         Object.keys(this.inputs).forEach(inputId => {
