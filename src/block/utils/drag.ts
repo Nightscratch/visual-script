@@ -1,4 +1,4 @@
-import { VisualBlock } from "src";
+import { VisualBlock } from "..";
 import { Block } from "../block";
 import offset from "./elem-offset";
 

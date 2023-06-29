@@ -88,10 +88,10 @@ export class VisualBlock {
     }
     public save(): Promise<blockJson[]> {
         return new Promise((resolve) => {
-            let res = []
+            let res:blockJson[] = []
             for (const [blockName, block] of Object.entries(this.blocks)) {
                 if (!block.parentInput) { // 是父节点
-                    res.push(block.toJson())
+                    res.push(block.toJson(false))
                 }
             }
             resolve(res)

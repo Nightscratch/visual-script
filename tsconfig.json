@@ -12,7 +12,7 @@
     "outFile": "dist/index.d.ts"
   },
   "include": [
-    "src/index.ts",
+    "src/block/index.ts",
   ],
   "exclude": [
     "node_modules"

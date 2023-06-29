@@ -1,4 +1,4 @@
-import { VisualBlock } from "src";
+import { VisualBlock } from "../index";
 import { Block } from "../block";
 
 import { DropDownButton } from "../interface"
