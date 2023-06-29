@@ -86,7 +86,7 @@ export class VisualBlock {
         })
     }
     public save(): Promise<blockJson[]> {
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve) => {
             let res = []
             for (const [blockName, block] of Object.entries(this.blocks)) {
                 if (!block.parentInput) { // 是父节点
@@ -97,7 +97,7 @@ export class VisualBlock {
         })
     }
     public clean(): Promise<void> {
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve) => {
             this.blockSpace.innerHTML = ''
             this.blocks = []
             resolve()
