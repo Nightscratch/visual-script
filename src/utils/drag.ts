@@ -44,8 +44,8 @@ export function draggable(newblock: Block): void {
         newblock.displayElement.classList.add("drag-block");
         newblock.dragStart();
 
-        offsetX = event.clientX/space.zoom + spaceRect.left - newBlockRect.left - space.blockSpace.scrollLeft;
-        offsetY = event.clientY/space.zoom + spaceRect.top - newBlockRect.top - space.blockSpace.scrollTop;
+        offsetX = event.clientX/space.zoom + spaceRect.left - newBlockRect.left - space.element.scrollLeft;
+        offsetY = event.clientY/space.zoom + spaceRect.top - newBlockRect.top - space.element.scrollTop;
 
         addEventListeners();
     }
