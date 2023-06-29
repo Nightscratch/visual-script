@@ -10,6 +10,7 @@ export interface newBlock {
     element?: HTMLElement;
     create?: boolean;
     inputs?: { [id: string]: blockInput };
+    blockType?:string
     defaultInsert:string
 }
 
