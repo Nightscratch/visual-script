@@ -59,8 +59,8 @@ export function draggable(newblock: Block): void {
             newblock.element.style.top = `${top}px`;
 
             space.setPlaceholder(
-                newBlockRect!.top + space.element.scrollTop + newBlockRect!.height + 1500,
-                newBlockRect!.left + space.element.scrollLeft + newBlockRect!.width + 1500
+                newBlockRect!.top + space.element.scrollTop + newBlockRect!.height + 2000,
+                newBlockRect!.left + space.element.scrollLeft + newBlockRect!.width + 2000
             );
         }
     }
@@ -124,8 +124,8 @@ export function backGroundDrag(space: VisualBlock) {
         event.preventDefault();
 
         space.setPlaceholder(
-            space.element.scrollTop + 1500,
-            space.element.scrollLeft + 1500
+            space.element.scrollTop + 2000,
+            space.element.scrollLeft + 2000
         );
     }
 }

@@ -117,8 +117,8 @@ export class VisualBlock {
                 }
             }
             this.setPlaceholder(
-                this.element.scrollHeight + 1500,
-                this.element.scrollWidth + 1500,
+                this.element.scrollHeight + 2000,
+                this.element.scrollWidth + 2000,
             );
             resolve()
         })
