@@ -130,7 +130,6 @@ export abstract class Block {
         } else {
             let insert: Block | null = null;
             if (input.value) {
-                
                 insert = input.value as unknown as Block;
                 insert.solitary();
             }

@@ -57,6 +57,7 @@ export class VisualBlock {
         this.zoom = Math.min(Math.max(zoom, 0.5), 2.5)
         this.blockSpace.setAttribute('style', `zoom:${this.zoom}`)
         this.scrollPlaceholder.setAttribute('style', `zoom:${this.zoom}`)
+        //this.setPlaceholder(parseInt(this.scrollPlaceholder.style.height),parseInt(this.scrollPlaceholder.style.width))
     }
     public setPlaceholder(top: number, left: number) {
         this.scrollPlaceholder.style.width = `${left / this.zoom}px`
