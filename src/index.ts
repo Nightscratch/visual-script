@@ -115,6 +115,10 @@ export class VisualBlock {
                     top += block.element.clientHeight + 10
                 }
             }
+            this.setPlaceholder(
+                this.element.scrollHeight + 1500,
+                this.element.scrollWidth + 1500,
+            );
             resolve()
         })
     }
