@@ -1,4 +1,3 @@
-import { blockInputType } from "./input"
 import { Block } from "./block";
 
 export interface initOption {

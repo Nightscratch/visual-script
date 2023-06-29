@@ -5,18 +5,18 @@ import offset from "./elem-offset";
 export function elementSolitary(element: HTMLElement, space: HTMLElement) {
     let elementRect: DOMRect = offset(element)
     let spaceElementRect: DOMRect = offset(space)
-    element.style.left = `${elementRect.left - spaceElementRect.left}px`
-    element.style.top = `${elementRect.top - spaceElementRect.top}px`
+    element.style.left = `${elementRect.left - spaceElementRect.left + space.scrollLeft}px`
+    element.style.top = `${elementRect.top - spaceElementRect.top + space.scrollTop}px`
 }
 
-export function getBoundingClientRect(element: HTMLElement, space: HTMLElement):{top:number,left:number} {
+export function getBoundingClientRect(element: HTMLElement, space: HTMLElement): { top: number, left: number } {
     let elementRect: DOMRect = offset(element)
     let spaceElementRect: DOMRect = offset(space)
     //cloneElement.style.left = `${elementRect.left - spaceElementRect.left + 20}px`
     //cloneElement.style.top = `${elementRect.top - spaceElementRect.top + 20}px`
     return {
-        top:elementRect.top - spaceElementRect.top,
-        left:elementRect.left - spaceElementRect.left
+        top: elementRect.top - spaceElementRect.top + space.scrollTop,
+        left: elementRect.left - spaceElementRect.left + space.scrollLeft,
     }
 }
 
@@ -29,7 +29,7 @@ export function draggable(
     let offsetY: number = 0;
 
     let newBlockRect: DOMRect | null = null;
-
+    let spaceRect: DOMRect | null = null;
 
 
     function handleMouseDown(event: MouseEvent): void {
@@ -40,10 +40,11 @@ export function draggable(
         if (event.button !== 0) {
             return;
         }
-        
+
         isDragging = true;
 
         newBlockRect = offset(newblock.element)
+        spaceRect = offset(newblock.space.element)
         if (newblock.parentInput) {
             elementSolitary(newblock.element, newblock.space.element)
         }
@@ -51,9 +52,8 @@ export function draggable(
         newblock.displayElement.classList.add("drag-block");
         newblock.dragStart()
 
-        offsetX = event.clientX - newBlockRect.left;
-        offsetY = event.clientY - newBlockRect.top;
-
+        offsetX = event.clientX + spaceRect.left - newBlockRect.left - newblock.space.element.scrollLeft;
+        offsetY = event.clientY + spaceRect.top - newBlockRect.top - newblock.space.element.scrollTop;
 
         addEventListeners();
     }
@@ -65,6 +65,11 @@ export function draggable(
 
             newblock.element.style.left = `${left}px`;
             newblock.element.style.top = `${top}px`;
+
+            newblock.space.setPlaceholder(
+                newBlockRect!.top + newblock.space.element.scrollTop + newBlockRect!.height + spaceRect!.height,
+                newBlockRect!.left + newblock.space.element.scrollLeft + newBlockRect!.width + spaceRect!.width
+            )
         }
     }
 

@@ -24,7 +24,7 @@
       .block-method:not(:first-child) {
         border-top-left-radius: 0;
       }
-      .block-method:not(:last-child) ::before {
+      .block-method:not(:last-child)::before {
         content: "";
         position: absolute;
         left: 0;
@@ -33,7 +33,7 @@
         height: 2px;
         background-color: rgb(76, 151, 255);
       }
-      .block-method:not(:first-child) ::after {
+      .block-method:not(:first-child)::after {
         content: "";
         position: absolute;
         left: 0;
@@ -42,11 +42,9 @@
         height: 2px;
         background-color: rgb(76, 151, 255);
       }
-
       .input-block {
         position: static;
       }
-
       * {
         user-select: none;
       }
@@ -57,6 +55,7 @@
         width: 100vw;
         height: 100vh;
         margin: 0;
+        overflow: scroll;
       }
 
       .drag-block {
@@ -64,7 +63,7 @@
       }
 
       .block-input {
-        border-radius: 10px;
+        border-radius: 4px;
         min-height: 15px;
         min-width: 25px;
         background-color: aliceblue;
@@ -75,8 +74,7 @@
       .block-block-input {
         min-height: 15px;
         min-width: 25px;
-        padding: 0px 5px;
-        margin-left: 5px;
+        margin-left: 10px;
         position: relative;
       }
       
@@ -84,9 +82,9 @@
       .block-block-input::before {
         content: "";
         position: absolute;
-        left: -5px;
         height: 100%;
         width: 10px;
+        left: -10px;
         background-color: rgb(76, 151, 255);
         border: 2px solid rgb(51, 115, 204);
         border-top: none;
@@ -103,12 +101,12 @@
         margin: 0;
         padding: 0;
       }
-
       .block-text {
         color: white;
         font-size: 0.8em;
         padding: 2px;
       }
+
       .drop-down{
         position: absolute;
         z-index: 999999;
@@ -122,13 +120,22 @@
       .drop-down button:hover{
         background-color: #FFF;
       }
+      .placeholder{
+        position: absolute;
+        background-image: 
+        linear-gradient(rgba(0, 0, 0) 2px, transparent 1px),
+        linear-gradient(90deg, rgb(0, 0, 0) 2px, transparent 1px);
+        background-size: 2em 2em;
+        width: 100%;
+        height: 100%;
+      }
     </style>
   </head>
 
   <body>
 
     <div id="blocklyDiv" class="block-space"></div>
-    <p style="position:absolute;top:0;margin:0;right:0">右键积木复制或删除(加载保存没做完)</p>
+    <p style="position:absolute;top:0;margin:0;right:0">右键积木复制或删除，右键舞台整理积木</p>
     <button id="save" style="position:absolute;top:25px;right:10px">保存</button>
     <button id="load" style="position:absolute;top:25px;right:50px">加载</button>
 

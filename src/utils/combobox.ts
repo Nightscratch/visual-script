@@ -53,7 +53,7 @@ export const addBlockDropdown = (targetBlock: Block, dropDown: DropDown) => {
 
 export const addSpaceDropdown = (space: VisualBlock, dropDown: DropDown) => {
   space.element.addEventListener('contextmenu', (event: MouseEvent) => {
-    if (event.target != space.element) {
+    if (event.target != space.scrollPlaceholder) {
       return;
     }
     event.preventDefault();

@@ -8,14 +8,24 @@ export class VisualBlock {
     public blocks: blocks.Block[] = [];
     public blockClasses: { [key: string]: any } = {};
     public dropDown:DropDown
+    public scrollPlaceholder:HTMLElement
 
     constructor(option: initOption) {
         this.element = option.element
         this.registerBlock(blocks.MoveBlock)
         this.registerBlock(blocks.IfBlock)
+
+        this.scrollPlaceholder = document.createElement('div')
+        this.scrollPlaceholder.classList.add('placeholder')
+        this.element.append(this.scrollPlaceholder)
+
         this.dropDown = new DropDown()
         document.body.appendChild(this.dropDown.element)
         addSpaceDropdown(this,this.dropDown)
+    }
+    public setPlaceholder(top:number,left:number){
+        this.scrollPlaceholder.style.width = `${left}px`
+        this.scrollPlaceholder.style.height = `${top}px`
     }
     public addBlock(newBlock: blocks.Block): void {
         newBlock.space = this;
