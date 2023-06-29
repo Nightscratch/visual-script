@@ -96,13 +96,13 @@ export abstract class Block {
     }
     public dragStart(): void {
         this.element.classList.remove('input-block');
-        this.space.element.appendChild(this.element);
+        this.space.blockSpace.appendChild(this.element);
         this.detachFromParent()
     }
     // 将该积木脱离输入
     private solitary(): void {
         this.detachFromParent()
-        elementSolitary(this.element, this.space.element);
+        elementSolitary(this.element, this.space.blockSpace);
         this.dragStart();
     }
     // 将该积木放入输入
@@ -157,7 +157,7 @@ export abstract class Block {
         if (first) {
             cloneElement.classList.remove('input-block');
             //this.parentInput = null;
-            const pos = getBoundingClientRect(this.element, this.space.element)
+            const pos = getBoundingClientRect(this.element, this.space.blockSpace)
             cloneElement.style.left = `${pos.left + 25}px`;
             cloneElement.style.top = `${pos.top + 25}px`
         };

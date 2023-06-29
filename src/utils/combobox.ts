@@ -51,14 +51,14 @@ export const addBlockDropdown = (targetBlock: Block, dropDown: DropDown) => {
   });
 };
 
-export const addSpaceDropdown = (space: VisualBlock, dropDown: DropDown) => {
+export const addSpaceDropdown = (space: VisualBlock) => {
   space.element.addEventListener('contextmenu', (event: MouseEvent) => {
     if (event.target != space.scrollPlaceholder) {
       return;
     }
     event.preventDefault();
-    dropDown.moveTo(event.clientX,event.clientY)
-    dropDown.setButton([
+    space.dropDown.moveTo(event.clientX,event.clientY)
+    space.dropDown.setButton([
       { text: '删除全部', click:()=>{space.clean()} },
       { text: '整理积木', click:()=>{space.arrange()} },
     ])

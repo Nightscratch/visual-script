@@ -50,16 +50,17 @@
       }
 
       .block-space {
-        background-color: antiquewhite;
+        background-color: rgb(255, 255, 255);
         position: relative;
-        width: 100vw;
-        height: 100vh;
         margin: 0;
         overflow: scroll;
+        width: 100vw;
+        height: 100vh;
       }
 
       .drag-block {
         box-shadow: #000 0px 0px 10px;
+        
       }
 
       .block-input {
@@ -128,12 +129,28 @@
         background-size: 2em 2em;
         width: 100%;
         height: 100%;
+       
+      }
+      .zoom-list{
+        z-index: 999999;
+        display: flex;
+        width: 20px;
+        position: fixed;
+      }
+      .zoom-btn{
+        background-color: white;
+        border: 2px solid #000;
+      }
+      .zoom-btn:last-child{
+        border-left: none;
+      }
+      .zoom-btn:first-child{
+        border-right: none;
       }
     </style>
   </head>
 
   <body>
-
     <div id="blocklyDiv" class="block-space"></div>
     <p style="position:absolute;top:0;margin:0;right:0">右键积木复制或删除，右键舞台整理积木</p>
     <button id="save" style="position:absolute;top:25px;right:10px">保存</button>
