@@ -107,26 +107,33 @@ export abstract class Block {
         this.parentInput = input;
         input.value = this as Block;
     }
-    private getSmallestChild(): this {
+    private getSmallestChild(key:string='next'): this {
         let sblock: this = this;
-        while (sblock.inputs.next.value instanceof Block) {
-            sblock = sblock.inputs.next.value as unknown as this;
+        while (sblock.inputs[key].value instanceof Block) {
+            sblock = sblock.inputs[key].value as unknown as this;
+            key = 'next'
         }
         return sblock;
     }
     private handleConnect(input: blockInput, target: BlockConnectType): void {
+        console.log("handleConnect",input,target)
         if (target.down && target.block != this) {
+            
             target.block.enterInput(target.down.inputs[target.inputId])
         } else {
             let insert: Block | null = null;
             if (input.value) {
+                
                 insert = input.value as unknown as Block;
                 insert.solitary();
             }
             this.enterInput(input)
             if (insert && this.defaultInsert) {
-                console.log(this.getSmallestChild());
-                (insert as Block).enterInput(this.getSmallestChild().inputs[this.defaultInsert])
+                if (this.inputs[this.defaultInsert].type == "method" && !(this.inputs[this.defaultInsert].value instanceof Block)) {
+                    (insert as Block).enterInput(this.inputs[this.defaultInsert])
+                }else{
+                    (insert as Block).enterInput(this.getSmallestChild().inputs.next)
+                }
             }
         }
     }

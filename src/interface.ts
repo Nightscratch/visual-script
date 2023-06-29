@@ -1,4 +1,4 @@
-
+import { blockInputType } from "./input"
 import { Block } from "./block";
 
 export interface initOption {
@@ -15,7 +15,7 @@ export interface newBlock {
 }
 
 export interface blockInput {
-    type: string;
+    type: any;
     value: Block | string | null;
     element: HTMLElement | null;
 }
@@ -34,4 +34,11 @@ export interface blockJson{
         blockType?: string,
         value : blockJson | string | null
     }}
+}
+
+export interface BlockConnectType {
+    down: Block | null;
+    distance: number;
+    inputId: string;
+    block: Block;
 }
