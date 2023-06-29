@@ -24,7 +24,7 @@ export abstract class Block {
     public draggableBlock: HTMLElement[] = []
     public displayElement: HTMLElement
     public defaultInsert: string
-
+    public blockType:string
     constructor(block: newBlock) {
         if (!block.create && block.element) {
             this.element = block.element
@@ -34,6 +34,9 @@ export abstract class Block {
         }
         if (!this.element) {
             this.create()
+        }
+        if (block.blockType) {
+            this.blockType = block.blockType
         }
         this.defaultInsert = block.defaultInsert
         this.getInput()
@@ -161,7 +164,7 @@ export abstract class Block {
             cloneElement.style.left = `${pos.left + 25}px`;
             cloneElement.style.top = `${pos.top + 25}px`
         };
-        let block = new this.space.blockClasses[this.constructor.name]({ create: false, element: cloneElement });
+        let block = new this.space.blockClasses[this.blockType]({ create: false, element: cloneElement });
         if (first) {
             block.parentInput = null
         }
@@ -203,7 +206,7 @@ export abstract class Block {
     }
     public toJson(first=true):blockJson{
         let json:blockJson = {
-            blockType:this.constructor.name,
+            blockType:this.blockType,
             inputs:{}
         }
         if (first) {
@@ -272,6 +275,7 @@ export class MoveBlock extends Block {
                 element: null,
             }
         }
+        block.blockType = "MoveBlock"
         block.defaultInsert = "next"
         super(block)
     }
@@ -315,6 +319,7 @@ export class IfBlock extends Block {
                 element: null,
             }
         }
+        block.blockType = "IfBlock"
         block.defaultInsert = "if"
         super(block)
     }
