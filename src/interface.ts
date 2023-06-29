@@ -28,10 +28,11 @@ export interface BlockInputData {
 }
 
 export interface blockJson{
-    type:string,
+    blockType:string,
+    [id :string]:any,
+
     inputs:{[id: string]:{
         type: 'text' | 'block'
-        blockType?: string,
         value : blockJson | string | null
     }}
 }
@@ -41,4 +42,9 @@ export interface BlockConnectType {
     distance: number;
     inputId: string;
     block: Block;
+}
+
+export interface DropDownButton{
+    text:string;
+    click:() => void
 }

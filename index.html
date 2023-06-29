@@ -16,7 +16,31 @@
         display: inline-flex;
         background-color: rgb(76, 151, 255);
         border: 2px solid rgb(51, 115, 204);
-        border-radius: 5px;
+        border-radius: 3px;
+      }
+      .block-method:not(:last-child) {
+        border-bottom-left-radius: 0;
+      }
+      .block-method:not(:first-child) {
+        border-top-left-radius: 0;
+      }
+      .block-method:not(:last-child) ::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        bottom: -2px;
+        width: 10px;
+        height: 2px;
+        background-color: rgb(76, 151, 255);
+      }
+      .block-method:not(:first-child) ::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: -2px;
+        width: 10px;
+        height: 2px;
+        background-color: rgb(76, 151, 255);
       }
 
       .input-block {
@@ -46,12 +70,28 @@
         background-color: aliceblue;
         margin: 2px;
       }
-      .block-block-input{
+
+
+      .block-block-input {
         min-height: 15px;
         min-width: 25px;
-        border-left: 2px dashed salmon;
-        padding:0px 5px;
+        padding: 0px 5px;
         margin-left: 5px;
+        position: relative;
+      }
+      
+      
+      .block-block-input::before {
+        content: "";
+        position: absolute;
+        left: -5px;
+        height: 100%;
+        width: 10px;
+        background-color: rgb(76, 151, 255);
+        border: 2px solid rgb(51, 115, 204);
+        border-top: none;
+        border-bottom: none;
+        
       }
 
       .next-input {
@@ -69,11 +109,24 @@
         font-size: 0.8em;
         padding: 2px;
       }
+      .drop-down{
+        position: absolute;
+        z-index: 999999;
+        border: 2px solid #d3d3d3;
+      }
+      .drop-down button{
+        display: block;
+        border: 0px;
+        background-color: #eee;
+      }
+      .drop-down button:hover{
+        background-color: #FFF;
+      }
     </style>
   </head>
 
   <body>
-    
+
     <div id="blocklyDiv" class="block-space"></div>
     <p style="position:absolute;top:0;margin:0;right:0">右键积木复制或删除(加载保存没做完)</p>
     <button id="save" style="position:absolute;top:25px;right:10px">保存</button>
@@ -91,17 +144,17 @@
       app.addBlock(new app.blockClasses.IfBlock({
         create: true
       }));
-      document.getElementById('save').addEventListener('click',()=>{
+      document.getElementById('save').addEventListener('click', () => {
         app.save()
-        .then((data)=>{
-          console.log(data)
-        })
-        
+          .then((data) => {
+            alert("已获取作品数据，请按F12打开控制台查看")
+            console.log("作品JSON：", JSON.stringify(data))
+          })
+
       })
-      document.getElementById('load').addEventListener('click',()=>{
-        app.load(prompt('输入作品json'))
-        .then(()=>{
-          alert("加载完成")
+      document.getElementById('load').addEventListener('click', () => {
+        app.clean().then(() => {
+          app.load(prompt('输入作品json'))
         })
       })
 

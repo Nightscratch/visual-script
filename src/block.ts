@@ -1,8 +1,13 @@
 import { newBlock, blockInput, blockJson } from "./interface";
 import { elementSolitary, getBoundingClientRect } from "./utils/drag";
-import { blockInputType } from "./input";
 import measureDistance from "./utils/measure-distance";
 import { VisualBlock } from "./index";
+
+enum blockType {
+    method = 0,
+    next = 1,
+    input = 2
+}
 
 interface BlockConnectType {
     down: Block | null;
@@ -59,10 +64,10 @@ export abstract class Block {
                     }
                 }
                 for (const [inputId, input] of Object.entries(this.inputs)) {
-                    if (["next","method"].includes(input.type) && !targetBlock.parentInput) {
+                    if ([blockType.next,blockType.method].includes(input.type) && !targetBlock.parentInput) {
                         let thisTarget;
                         let downTarget;
-                        if (input.type=="next") {
+                        if (input.type==blockType.next) {
                             thisTarget = smallestChild
                             downTarget = smallestChild
                         }else{
@@ -116,7 +121,6 @@ export abstract class Block {
         return sblock;
     }
     private handleConnect(input: blockInput, target: BlockConnectType): void {
-        console.log("handleConnect",input,target)
         if (target.down && target.block != this) {
             
             target.block.enterInput(target.down.inputs[target.inputId])
@@ -129,7 +133,7 @@ export abstract class Block {
             }
             this.enterInput(input)
             if (insert && this.defaultInsert) {
-                if (this.inputs[this.defaultInsert].type == "method" && !(this.inputs[this.defaultInsert].value instanceof Block)) {
+                if (this.inputs[this.defaultInsert].type == blockType.method && !(this.inputs[this.defaultInsert].value instanceof Block)) {
                     (insert as Block).enterInput(this.inputs[this.defaultInsert])
                 }else{
                     (insert as Block).enterInput(this.getSmallestChild().inputs.next)
@@ -173,7 +177,6 @@ export abstract class Block {
         
         Object.keys(this.inputs).forEach(inputId => {
             if (this.inputs[inputId].value instanceof Block) {
-                console.log(this.inputs[inputId])
                 let inputClone: Block = (this.inputs[inputId].value as unknown as Block).copy(false);
                 (clone.inputs[inputId].value as unknown as Block) = inputClone;
                 inputClone.enterInput(clone.inputs[inputId]);
@@ -198,34 +201,49 @@ export abstract class Block {
             }
         });
     }
-    public toJson():blockJson{
+    public toJson(first=true):blockJson{
         let json:blockJson = {
-            type:this.constructor.name,
+            blockType:this.constructor.name,
             inputs:{}
         }
+        if (first) {
+            json.left = parseInt(this.element.style.left)
+            json.top = parseInt(this.element.style.top)
+        }
+        this.saveProperties(json)
         Object.keys(this.inputs).forEach(inputId => {
             if (this.inputs[inputId].value instanceof Block) {
                 json.inputs[inputId] = { 
                     type:'block',
-                    blockType:this.constructor.name,
-                    value:(this.inputs[inputId].value as Block).toJson()
+                    value:(this.inputs[inputId].value as Block).toJson(false)
                 };
-            } else {
+
+            } else  if (this.inputs[inputId].value instanceof String) {
                 json.inputs[inputId] = {
                     type:'text',
                     value:this.inputs[inputId].value as string
                 };
             }
         });
+
         return json
     }
-    public loadInputs(blockData:blockJson,first:boolean = false):Block{
+    public saveProperties(json:blockJson){}
+    public loadProperties(json:blockJson){}
+
+    public loadInputs(blockData:blockJson,first:boolean = true):Block{
+        if (first) {
+            this.element.style.left = `${blockData.left}px`
+            this.element.style.top = `${blockData.top}px`
+        }
+        this.loadProperties(blockData)
         for (const [inputId,input] of Object.entries(blockData.inputs)) {
             if (input.type == 'block') {
-                let newBlock = new this.space.blockClasses[input.blockType!]({ create: true });
+                let newBlockData = (input.value as blockJson)
+                let newBlock = new this.space.blockClasses[newBlockData.blockType]({ create: true });
                 this.space.addBlock(newBlock)
                 if (input.value) {
-                    newBlock.loadInputs(input.value)
+                    newBlock.loadInputs(input.value,false).enterInput(this.inputs[inputId])
                 }
             } else {
                 
@@ -239,17 +257,17 @@ export class MoveBlock extends Block {
     constructor(block: newBlock) {
         block.inputs = {
             "y": {
-                type: "input",
+                type: blockType.input,
                 value: null,
                 element: null,
             },
             "x": {
-                type: "input",
+                type: blockType.input,
                 value: null,
                 element: null,
             },
             "next": {
-                type: "next",
+                type: blockType.next,
                 value: null,
                 element: null,
             }
@@ -277,22 +295,22 @@ export class IfBlock extends Block {
     constructor(block: newBlock) {
         block.inputs = {
             "condition": {
-                type: "input",
+                type: blockType.input,
                 value: null,
                 element: null,
             },
             "if": {
-                type: "method",
+                type: blockType.method,
                 value: null,
                 element: null,
             },
             "else": {
-                type: "method",
+                type: blockType.method,
                 value: null,
                 element: null,
             },
             "next": {
-                type: "next",
+                type: blockType.next,
                 value: null,
                 element: null,
             }
@@ -306,18 +324,18 @@ export class IfBlock extends Block {
         this.element.innerHTML =
             `
             <div id="block-display" drag="true">
-                <div class="block-line">
+                <div class="block-line block-method">
                     <p class="block-text" drag="true">如果</p>
                     <div class="block-input" id="input-condition"></div>
                     <p class="block-text" drag="true">那么</p>
                 </div>
                 <div class="block-block-input" id="input-if"></div>
                 
-                <div class="block-line">
+                <div class="block-line block-method">
                     <p class="block-text" drag="true">否则</p>
                 </div>
                 <div class="block-block-input" id="input-else"></div>
-                <div class="block-line">
+                <div class="block-line block-method">
                     <p class="block-text" drag="true">end</p>
                 </div>
             </div>

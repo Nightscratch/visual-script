@@ -33,12 +33,14 @@ export function draggable(
 
 
     function handleMouseDown(event: MouseEvent): void {
+        newblock.space.dropDown.close()
         if (!newblock.draggableBlock.includes(event.target as HTMLElement)) {
             return;
         }
         if (event.button !== 0) {
             return;
         }
+        
         isDragging = true;
 
         newBlockRect = offset(newblock.element)

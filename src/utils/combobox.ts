@@ -1,43 +1,66 @@
+import { VisualBlock } from "src";
 import { Block } from "../block";
 
-export const addDropdown = (newblock: Block) => {
-  let dropdown: HTMLElement | null = null;
+import { DropDownButton } from "../interface"
 
-  newblock.element.addEventListener('contextmenu', (event: MouseEvent) => {
-    if (!newblock.draggableBlock.includes(event.target as HTMLElement)) {
-        return;
-    }
-    event.preventDefault(); // 阻止默认的右键菜单
+export class DropDown {
+  public element: HTMLElement
+  constructor() {
+    this.element = document.createElement('div');
+    this.element.classList.add('drop-down')
+    this.close()
+    document.addEventListener('click', (event: MouseEvent) => {
+      this.close()
+    });
+  }
+  public createButton(data: DropDownButton): HTMLElement {
+    const button = document.createElement('button');
+    button.innerText = data.text;
+    button.addEventListener('click', data.click)
+    return button
+  }
+  public setButton(buttons: DropDownButton[]) {
+    this.element.innerHTML = ''
+    buttons.forEach((button) => {
+      this.element.appendChild(this.createButton(button));
+    })
+    this.element.style.display = 'block';
+  }
+  public close() {
+    this.element.style.display = 'none'
+  }
+  public moveTo(left:number,top:number){
+    this.element.style.left = `${left}px`;
+    this.element.style.top = `${top}px`;
+  }
 
-    if (dropdown) {
-      document.body.removeChild(dropdown);
-      dropdown = null;
+}
+
+
+export const addBlockDropdown = (targetBlock: Block, dropDown: DropDown) => {
+  targetBlock.element.addEventListener('contextmenu', (event: MouseEvent) => {
+    if (!targetBlock.draggableBlock.includes(event.target as HTMLElement)) {
       return;
     }
-
-    dropdown = document.createElement('div');
-    dropdown.style.position = 'absolute';
-    dropdown.style.left = `${event.clientX}px`;
-    dropdown.style.top = `${event.clientY}px`;
-
-    const button1 = document.createElement('button');
-    button1.innerText = '复制';
-    button1.addEventListener('click',()=>{newblock.copy()})
-    dropdown.appendChild(button1);
-
-    const button2 = document.createElement('button');
-    button2.addEventListener('click',()=>{newblock.delete()})
-    button2.innerText = '删除';
-    dropdown.appendChild(button2);
-
-    document.body.appendChild(dropdown);
+    event.preventDefault();
+    dropDown.moveTo(event.clientX,event.clientY)
+    dropDown.setButton([
+      { text: '复制积木', click:()=>{targetBlock.copy()} },
+      { text: '删除积木', click:()=>{targetBlock.delete()} },
+    ])
   });
+};
 
-  // 点击页面其他位置时关闭下拉框
-  document.addEventListener('click', (event: MouseEvent) => {
-    if (dropdown && !newblock.element.contains(event.target as Node)) {
-      document.body.removeChild(dropdown);
-      dropdown = null;
+export const addSpaceDropdown = (space: VisualBlock, dropDown: DropDown) => {
+  space.element.addEventListener('contextmenu', (event: MouseEvent) => {
+    if (event.target != space.element) {
+      return;
     }
+    event.preventDefault();
+    dropDown.moveTo(event.clientX,event.clientY)
+    dropDown.setButton([
+      { text: '删除全部', click:()=>{space.clean()} },
+      { text: '整理积木', click:()=>{space.arrange()} },
+    ])
   });
 };
