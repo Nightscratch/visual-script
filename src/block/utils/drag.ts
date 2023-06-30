@@ -42,21 +42,22 @@ export function draggable(newblock: Block): void {
         }
 
         newblock.displayElement.classList.add("drag-block");
+
         newblock.dragStart();
 
-        offsetX = event.clientX/space.zoom + spaceRect.left - newBlockRect.left - space.element.scrollLeft/space.zoom;
-        offsetY = event.clientY/space.zoom + spaceRect.top - newBlockRect.top - space.element.scrollTop/space.zoom;
+        offsetX = event.clientX / space.zoom + spaceRect.left - newBlockRect.left - space.element.scrollLeft / space.zoom;
+        offsetY = event.clientY / space.zoom + spaceRect.top - newBlockRect.top - space.element.scrollTop / space.zoom;
 
         addEventListeners();
     }
 
     function handleMouseMove(event: MouseEvent): void {
         if (isDragging) {
-            const left = event.clientX/space.zoom - offsetX;
-            const top = event.clientY/space.zoom - offsetY;
+            const left = event.clientX / space.zoom - offsetX;
+            const top = event.clientY / space.zoom - offsetY;
             newblock.element.style.left = `${left}px`;
             newblock.element.style.top = `${top}px`;
-            
+
         }
     }
 
@@ -66,9 +67,9 @@ export function draggable(newblock: Block): void {
         newblock.dragEnd();
         let x = parseInt(newblock.element.style.left)
         let y = parseInt(newblock.element.style.top)
-        newblock.element.style.top = `${Math.max(0,y)}px`
-        newblock.element.style.left = `${Math.max(0,x)}px`
-        
+        newblock.element.style.top = `${Math.max(0, y)}px`
+        newblock.element.style.left = `${Math.max(0, x)}px`
+
         removeEventListeners();
         space.setPlaceholder()
     }
