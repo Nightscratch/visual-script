@@ -182,6 +182,7 @@
       <div class="edit-space">
         <div class="code-space">
           <div class="code-tool-box"></div>
+          <div id="zoom"></div>
           <div id="blockDiv" class="block-space"></div>        
         </div>
 
@@ -204,7 +205,8 @@
 
 
       let app = new VisualBlock({
-        element: document.getElementById('blockDiv')
+        element: document.getElementById('blockDiv'),
+        zoomElement: document.getElementById('zoom')
       });
       let manager = new BlockManager(app)
       let file1 = new BlockContainer()

@@ -2,6 +2,7 @@ import { Block } from "./block";
 
 export interface initOption {
     element: HTMLElement;
+    zoomElement:HTMLElement;
     width?: number;
     height?: number;
 }

@@ -21,7 +21,7 @@ export class VisualBlock {
         this.registerBlock("MoveBlock", MoveBlock)
         this.registerBlock("IfBlock", IfBlock)
 
-        this.element.parentElement!.appendChild(createZoomBtn([
+        option.zoomElement.appendChild(createZoomBtn([
             {
                 text: '＋', click: () => {
                     this.zoom += 0.4
