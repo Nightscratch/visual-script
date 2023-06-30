@@ -65,11 +65,16 @@ export class VisualBlock {
         this.scrollPlaceholder.setAttribute('style', `zoom:${this.zoom}`)
     }
     public setPlaceholder( ) {
+        let scrollLeft=this.element.scrollLeft
+        let scrollTop=this.element.scrollTop
+
         this.scrollPlaceholder.style.display = 'none'
-        this.scrollPlaceholder.style.width = `${this.element.scrollWidth + 1000}px`
-        this.scrollPlaceholder.style.height = `${this.element.scrollHeight + 1000}px`
+        this.scrollPlaceholder.style.height = `${this.element.scrollHeight + this.element.clientHeight/2}px`
+        this.scrollPlaceholder.style.width = `${this.element.scrollWidth + this.element.clientWidth/2}px`
         this.scrollPlaceholder.style.display = 'block'
-        
+        this.element.scrollLeft =scrollLeft
+        this.element.scrollTop =scrollTop
+
     }
     public addBlock(newBlock: Block): void {
         newBlock.space = this;
