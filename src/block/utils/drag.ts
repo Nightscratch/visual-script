@@ -54,9 +54,9 @@ export function draggable(newblock: Block): void {
         if (isDragging) {
             const left = event.clientX/space.zoom - offsetX;
             const top = event.clientY/space.zoom - offsetY;
-            space.setPlaceholder()
             newblock.element.style.left = `${left}px`;
             newblock.element.style.top = `${top}px`;
+            
         }
     }
 
@@ -70,6 +70,7 @@ export function draggable(newblock: Block): void {
         newblock.element.style.left = `${Math.max(0,x)}px`
         
         removeEventListeners();
+        space.setPlaceholder()
     }
 
     function addEventListeners(): void {
@@ -120,7 +121,6 @@ export function backGroundDrag(space: VisualBlock) {
         startY = event.clientY;
         event.preventDefault();
 
-        space.setPlaceholder(
-        );
+        //space.setPlaceholder();
     }
 }

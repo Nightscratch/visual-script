@@ -48,7 +48,9 @@ export class VisualBlock {
 
         this.blockSpace = document.createElement('div')
         this.blockSpace.classList.add('block-container-space')
-        this.element.appendChild(this.blockSpace)
+        this.element.appendChild(this.blockSpace);
+
+        (window as any).test = this
 
         this.dropDown = new DropDown()
         document.body.appendChild(this.dropDown.element)
@@ -61,11 +63,13 @@ export class VisualBlock {
         this.zoom = Math.min(Math.max(zoom, 0.5), 2.5)
         this.blockSpace.setAttribute('style', `zoom:${this.zoom}`)
         this.scrollPlaceholder.setAttribute('style', `zoom:${this.zoom}`)
-        //this.setPlaceholder(parseInt(this.scrollPlaceholder.style.height),parseInt(this.scrollPlaceholder.style.width))
     }
     public setPlaceholder( ) {
-        this.scrollPlaceholder.style.width = `${ (this.element.clientWidth + 1000 + this.element.scrollLeft)/ this.zoom}px`
-        this.scrollPlaceholder.style.height = `${ (this.element.clientHeight + 1000 + this.element.scrollTop) / this.zoom}px`
+        this.scrollPlaceholder.style.display = 'none'
+        this.scrollPlaceholder.style.width = `${this.element.scrollWidth + 1000}px`
+        this.scrollPlaceholder.style.height = `${this.element.scrollHeight + 1000}px`
+        this.scrollPlaceholder.style.display = 'block'
+        
     }
     public addBlock(newBlock: Block): void {
         newBlock.space = this;
