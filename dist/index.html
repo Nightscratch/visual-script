@@ -18,12 +18,15 @@
         border: 2px solid rgb(51, 115, 204);
         border-radius: 3px;
       }
+
       .block-method:not(:last-child) {
         border-bottom-left-radius: 0;
       }
+
       .block-method:not(:first-child) {
         border-top-left-radius: 0;
       }
+
       .block-method:not(:last-child)::before {
         content: "";
         position: absolute;
@@ -33,6 +36,7 @@
         height: 2px;
         background-color: rgb(76, 151, 255);
       }
+
       .block-method:not(:first-child)::after {
         content: "";
         position: absolute;
@@ -42,25 +46,18 @@
         height: 2px;
         background-color: rgb(76, 151, 255);
       }
+
       .input-block {
         position: static;
       }
+
       * {
         user-select: none;
       }
 
-      .block-space {
-        background-color: rgb(255, 255, 255);
-        position: relative;
-        margin: 0;
-        overflow: scroll;
-        width: 100vw;
-        height: 100vh;
-      }
-
       .drag-block {
         box-shadow: #000 0px 0px 10px;
-        
+
       }
 
       .block-input {
@@ -78,8 +75,8 @@
         margin-left: 10px;
         position: relative;
       }
-      
-      
+
+
       .block-block-input::before {
         content: "";
         position: absolute;
@@ -90,7 +87,7 @@
         border: 2px solid rgb(51, 115, 204);
         border-top: none;
         border-bottom: none;
-        
+
       }
 
       .next-input {
@@ -102,68 +99,106 @@
         margin: 0;
         padding: 0;
       }
+
       .block-text {
         color: white;
         font-size: 0.8em;
         padding: 2px;
+        white-space: nowrap;
       }
 
-      .drop-down{
+      .drop-down {
         position: absolute;
         z-index: 999999;
         border: 2px solid #d3d3d3;
       }
-      .drop-down button{
+
+      .drop-down button {
         display: block;
         border: 0px;
         background-color: #eee;
       }
-      .drop-down button:hover{
+
+      .drop-down button:hover {
         background-color: #FFF;
       }
-      .placeholder{
+
+      .placeholder {
         position: absolute;
-        background-image: 
-        linear-gradient(rgba(0, 0, 0) 2px, transparent 1px),
-        linear-gradient(90deg, rgb(0, 0, 0) 2px, transparent 1px);
+        background-image:
+          linear-gradient(rgba(0, 0, 0) 2px, transparent 1px),
+          linear-gradient(90deg, rgb(0, 0, 0) 2px, transparent 1px);
         background-size: 2em 2em;
         width: 100%;
         height: 100%;
-       
+
       }
-      .zoom-list{
-        z-index: 999999;
+
+      .zoom-list {
+        z-index: 1;
         display: flex;
         width: 20px;
-        position: fixed;
-        left: 5px;
-        top: 5px;
-        
+        position: absolute;
+        bottom: 20px;
+        left: 40px;
       }
-      .zoom-btn{
+
+      .zoom-btn {
         background-color: white;
         border: 2px solid #b9b9b9;
       }
-      .zoom-btn:last-child{
+
+      .zoom-btn:last-child {
         border-left: none;
         border-top-right-radius: 5px;
         border-bottom-right-radius: 5px;
       }
-      .zoom-btn:first-child{
+
+      .zoom-btn:first-child {
         border-right: none;
         border-top-left-radius: 5px;
         border-bottom-left-radius: 5px;
 
       }
     </style>
-    <script type="module" crossorigin src="/visual-script/assets/index.7655f255.js"></script>
+    <script type="module" crossorigin src="/visual-script/assets/index.7c17902d.js"></script>
+    <link rel="stylesheet" href="/visual-script/assets/index.7417512b.css">
   </head>
 
   <body>
-    <div id="blocklyDiv" class="block-space"></div>
-    <p style="position:absolute;top:0;margin:0;right:0">右键积木复制或删除，右键舞台整理积木</p>
-    <button id="save" style="position:absolute;top:25px;right:10px">保存</button>
-    <button id="load" style="position:absolute;top:25px;right:50px">加载</button>
+    <div class="work-space">
+      <ul class="nav">
+        <li>
+          <p>Scratch 加强版</p>
+        </li>
+        <li class="btn">
+          <p>文件</p>
+        </li>
+        <li class="btn">
+          <p>设置</p>
+        </li>
+        <li class="btn">
+          <p>帮助</p>
+        </li>
+      </ul>
+      <div class="edit-space">
+        <div class="code-space">
+          <div class="code-tool-box"></div>
+          <div id="zoom"></div>
+          <div id="blockDiv" class="block-space"></div>        
+        </div>
+
+        <div class="display-space">
+          <div class="view-port">
+
+          </div>
+          <div class="sprite-list">
+
+          </div>
+        </div>        
+      </div>
+    </div>
+
 
     
   </body>
