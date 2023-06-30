@@ -12,13 +12,16 @@ export class VisualBlock {
     public scrollPlaceholder: HTMLElement
     public zoom: number = 1
     public blockSpace: HTMLElement
+    public leftMostBlock:Block
+    public bottomMostBlock:Block
+
 
     constructor(option: initOption) {
         this.element = option.element
         this.registerBlock("MoveBlock", MoveBlock)
         this.registerBlock("IfBlock", IfBlock)
 
-        this.element.appendChild(createZoomBtn([
+        this.element.parentElement!.appendChild(createZoomBtn([
             {
                 text: '＋', click: () => {
                     this.zoom += 0.4
@@ -44,6 +47,7 @@ export class VisualBlock {
         this.element.append(this.scrollPlaceholder)
 
         this.blockSpace = document.createElement('div')
+        this.blockSpace.classList.add('block-container-space')
         this.element.appendChild(this.blockSpace)
 
         this.dropDown = new DropDown()
@@ -59,9 +63,9 @@ export class VisualBlock {
         this.scrollPlaceholder.setAttribute('style', `zoom:${this.zoom}`)
         //this.setPlaceholder(parseInt(this.scrollPlaceholder.style.height),parseInt(this.scrollPlaceholder.style.width))
     }
-    public setPlaceholder(top: number, left: number) {
-        this.scrollPlaceholder.style.width = `${left / this.zoom}px`
-        this.scrollPlaceholder.style.height = `${top / this.zoom}px`
+    public setPlaceholder( ) {
+        this.scrollPlaceholder.style.width = `${ (this.element.clientWidth + 1000 + this.element.scrollLeft)/ this.zoom}px`
+        this.scrollPlaceholder.style.height = `${ (this.element.clientHeight + 1000 + this.element.scrollTop) / this.zoom}px`
     }
     public addBlock(newBlock: Block): void {
         newBlock.space = this;
@@ -116,10 +120,7 @@ export class VisualBlock {
                     top += block.element.clientHeight + 10
                 }
             }
-            this.setPlaceholder(
-                this.element.scrollHeight + 2000,
-                this.element.scrollWidth + 2000,
-            );
+            this.setPlaceholder();
             resolve()
         })
     }

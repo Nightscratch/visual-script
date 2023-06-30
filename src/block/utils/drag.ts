@@ -44,8 +44,8 @@ export function draggable(newblock: Block): void {
         newblock.displayElement.classList.add("drag-block");
         newblock.dragStart();
 
-        offsetX = event.clientX/space.zoom + spaceRect.left - newBlockRect.left - space.element.scrollLeft;
-        offsetY = event.clientY/space.zoom + spaceRect.top - newBlockRect.top - space.element.scrollTop;
+        offsetX = event.clientX/space.zoom + spaceRect.left - newBlockRect.left - space.element.scrollLeft/space.zoom;
+        offsetY = event.clientY/space.zoom + spaceRect.top - newBlockRect.top - space.element.scrollTop/space.zoom;
 
         addEventListeners();
     }
@@ -54,14 +54,9 @@ export function draggable(newblock: Block): void {
         if (isDragging) {
             const left = event.clientX/space.zoom - offsetX;
             const top = event.clientY/space.zoom - offsetY;
-
+            space.setPlaceholder()
             newblock.element.style.left = `${left}px`;
             newblock.element.style.top = `${top}px`;
-
-            space.setPlaceholder(
-                newBlockRect!.top + space.element.scrollTop + newBlockRect!.height + 2000,
-                newBlockRect!.left + space.element.scrollLeft + newBlockRect!.width + 2000
-            );
         }
     }
 
@@ -69,9 +64,11 @@ export function draggable(newblock: Block): void {
         isDragging = false;
         newblock.displayElement.classList.remove("drag-block");
         newblock.dragEnd();
-        newblock.element.style.top = `${Math.max(0,parseInt(newblock.element.style.top))}px`
-        newblock.element.style.left = `${Math.max(0,parseInt(newblock.element.style.left))}px`
-
+        let x = parseInt(newblock.element.style.left)
+        let y = parseInt(newblock.element.style.top)
+        newblock.element.style.top = `${Math.max(0,y)}px`
+        newblock.element.style.left = `${Math.max(0,x)}px`
+        
         removeEventListeners();
     }
 
@@ -124,8 +121,6 @@ export function backGroundDrag(space: VisualBlock) {
         event.preventDefault();
 
         space.setPlaceholder(
-            space.element.scrollTop + 2000,
-            space.element.scrollLeft + 2000
         );
     }
 }
