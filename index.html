@@ -6,160 +6,6 @@
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Vite App</title>
-    <style>
-      .block {
-        position: absolute;
-      }
-
-      .block-line {
-        position: relative;
-        display: inline-flex;
-        background-color: rgb(76, 151, 255);
-        border: 2px solid rgb(51, 115, 204);
-        border-radius: 3px;
-      }
-
-      .block-method:not(:last-child) {
-        border-bottom-left-radius: 0;
-      }
-
-      .block-method:not(:first-child) {
-        border-top-left-radius: 0;
-      }
-
-      .block-method:not(:last-child)::before {
-        content: "";
-        position: absolute;
-        left: 0;
-        bottom: -2px;
-        width: 10px;
-        height: 2px;
-        background-color: rgb(76, 151, 255);
-      }
-
-      .block-method:not(:first-child)::after {
-        content: "";
-        position: absolute;
-        left: 0;
-        top: -2px;
-        width: 10px;
-        height: 2px;
-        background-color: rgb(76, 151, 255);
-      }
-
-      .input-block {
-        position: static;
-      }
-
-      * {
-        user-select: none;
-      }
-
-      .drag-block {
-        filter: drop-shadow(0 0 10px rgba(0, 0, 0, 0.5));
-      }
-
-      .block-input {
-        border-radius: 4px;
-        min-height: 15px;
-        min-width: 25px;
-        background-color: aliceblue;
-        margin: 2px;
-      }
-
-
-      .block-block-input {
-        min-height: 15px;
-        min-width: 25px;
-        margin-left: 10px;
-        position: relative;
-      }
-
-
-      .block-block-input::before {
-        content: "";
-        position: absolute;
-        height: 100%;
-        width: 10px;
-        left: -10px;
-        background-color: rgb(76, 151, 255);
-        border: 2px solid rgb(51, 115, 204);
-        border-top: none;
-        border-bottom: none;
-
-      }
-
-      .next-input {
-        background-color: transparent;
-      }
-
-      .block-text,
-      body {
-        margin: 0;
-        padding: 0;
-      }
-
-      .block-text {
-        color: white;
-        font-size: 0.8em;
-        padding: 2px;
-        white-space: nowrap;
-      }
-
-      .drop-down {
-        position: absolute;
-        z-index: 999999;
-        border: 2px solid #d3d3d3;
-      }
-
-      .drop-down button {
-        display: block;
-        border: 0px;
-        background-color: #eee;
-      }
-
-      .drop-down button:hover {
-        background-color: #FFF;
-      }
-
-      .placeholder {
-        position: absolute;
-        background-image:
-          linear-gradient(rgba(0, 0, 0) 2px, transparent 1px),
-          linear-gradient(90deg, rgb(0, 0, 0) 2px, transparent 1px);
-        background-size: 2em 2em;
-        width: 100%;
-        height: 100%;
-
-      }
-
-      .zoom-list {
-        z-index: 1;
-        display: flex;
-        width: 20px;
-        position: absolute;
-        bottom: 20px;
-        left: 40px;
-      }
-
-      .zoom-btn {
-        background-color: white;
-        border: 2px solid #b9b9b9;
-      }
-
-      .zoom-btn:last-child {
-        border-left: none;
-        border-top-right-radius: 5px;
-        border-bottom-right-radius: 5px;
-      }
-
-      .zoom-btn:first-child {
-        border-right: none;
-        border-top-left-radius: 5px;
-        border-bottom-left-radius: 5px;
-
-      }
-    </style>
   </head>
 
   <body>
@@ -182,7 +28,7 @@
         <div class="code-space">
           <div class="code-tool-box"></div>
           <div id="zoom"></div>
-          <div id="blockDiv" class="block-space"></div>        
+          <div id="blockDiv" class="block-space"></div>
         </div>
 
         <div class="display-space">
@@ -192,14 +38,17 @@
           <div class="sprite-list">
 
           </div>
-        </div>        
+        </div>
       </div>
     </div>
 
 
     <script type="module">
       import './page-style.css'
+      import './src/assets/css/block.css'
+
       import { VisualBlock } from './src/block/index'
+      import * as blocks from './src/block/blocks'
       import { BlockManager, BlockContainer } from './src/block-manager'
 
 
@@ -207,14 +56,17 @@
         element: document.getElementById('blockDiv'),
         zoomElement: document.getElementById('zoom')
       });
+
+      for (const i in blocks) {
+        app.registerBlock(blocks[i])
+        app.addBlock(new app.blockClasses[i]({
+          create: true
+        }));
+      }
+
       let manager = new BlockManager(app)
       let file1 = new BlockContainer()
-      app.addBlock(new app.blockClasses.MoveBlock({
-        create: true
-      }));
-      app.addBlock(new app.blockClasses.IfBlock({
-        create: true
-      }));
+
       file1.load(app)
       manager.load(file1)
 

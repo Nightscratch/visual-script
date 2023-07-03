@@ -1,8 +1,8 @@
 import { initOption, blockJson } from "./interface";
-import { draggable, backGroundDrag } from "./utils/drag";
+import { blockDraggable, backGroundDraggable } from "./utils/drag";
 import { addBlockDropdown, DropDown, addSpaceDropdown } from "./utils/combobox"
 import { createZoomBtn } from "./utils/zoom-button"
-import { MoveBlock, IfBlock, Block } from "./block";
+import { Block } from "./block";
 
 export class VisualBlock {
     public element: HTMLElement;
@@ -18,9 +18,6 @@ export class VisualBlock {
 
     constructor(option: initOption) {
         this.element = option.element
-        this.registerBlock("MoveBlock", MoveBlock)
-        this.registerBlock("IfBlock", IfBlock)
-
         option.zoomElement.appendChild(createZoomBtn([
             {
                 text: '＋', click: () => {
@@ -55,7 +52,7 @@ export class VisualBlock {
         this.dropDown = new DropDown()
         document.body.appendChild(this.dropDown.element)
         addSpaceDropdown(this)
-        backGroundDrag(this)
+        backGroundDraggable(this)
 
         this.setZoom()
     }
@@ -63,31 +60,34 @@ export class VisualBlock {
         this.zoom = Math.min(Math.max(zoom, 0.5), 2.5)
         this.blockSpace.setAttribute('style', `zoom:${this.zoom}`)
         this.scrollPlaceholder.setAttribute('style', `zoom:${this.zoom}`)
+        this.setPlaceholder()
     }
     public setPlaceholder( ) {
-        let scrollLeft=this.element.scrollLeft
-        let scrollTop=this.element.scrollTop
+        let scrollLeft = this.element.scrollLeft
+        let scrollTop = this.element.scrollTop
 
         this.scrollPlaceholder.style.display = 'none'
-        this.scrollPlaceholder.style.height = `${this.element.scrollHeight + this.element.clientHeight/2}px`
-        this.scrollPlaceholder.style.width = `${this.element.scrollWidth + this.element.clientWidth/2}px`
+        this.scrollPlaceholder.style.height = `${(this.element.scrollHeight + this.element.clientHeight/2)/this.zoom}px`
+        this.scrollPlaceholder.style.width = `${(this.element.scrollWidth + this.element.clientWidth/2)/this.zoom}px`
         this.scrollPlaceholder.style.display = 'block'
-        this.element.scrollLeft =scrollLeft
-        this.element.scrollTop =scrollTop
+
+        this.element.scrollLeft = scrollLeft
+        this.element.scrollTop = scrollTop
 
     }
     public addBlock(newBlock: Block): void {
         newBlock.space = this;
         this.blocks.push(newBlock);
         this.blockSpace.appendChild(newBlock.element);
-        draggable(newBlock);
+        blockDraggable(newBlock);
         addBlockDropdown(newBlock, this.dropDown);
     }
     public removeBlock(delBlock: Block): void {
         this.blocks.splice(this.blocks.indexOf(delBlock), 1)
     }
-    public registerBlock(name: string, blockClass: any) {
-        this.blockClasses[name] = blockClass
+    public registerBlock(blockClass: any) {
+        let j = new blockClass({create:true})
+        this.blockClasses[j.blockType] = blockClass
     }
     public load(data: string): Promise<void> {
         return new Promise((resolve, reject) => {

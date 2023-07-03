@@ -1,99 +1,106 @@
 import { VisualBlock } from "..";
 import { Block } from "../block";
-import offset from "./elem-offset";
 
-export function elementSolitary(element: HTMLElement, space: HTMLElement) {
-    const elementRect: DOMRect = offset(element);
-    const spaceElementRect: DOMRect = offset(space);
+function getClientRects(element: HTMLElement, space: HTMLElement): DOMRect[] {
+    return [element.getBoundingClientRect(), space.getBoundingClientRect()]
+}
+
+export const move = (element: HTMLElement, space: HTMLElement, x: number, y: number): void => {
+    const [elementRect, spaceElementRect] = getClientRects(element, space)
+    element.style.left = `${elementRect.left - spaceElementRect.left + space.scrollLeft + x}px`;
+    element.style.top = `${elementRect.top - spaceElementRect.top + space.scrollTop + y}px`;
+}
+
+export const elementSolitaryPostiton = (element: HTMLElement, space: HTMLElement) => {
+    const [elementRect, spaceElementRect] = getClientRects(element, space)
     element.style.left = `${elementRect.left - spaceElementRect.left + space.scrollLeft}px`;
     element.style.top = `${elementRect.top - spaceElementRect.top + space.scrollTop}px`;
 }
 
-export function getBoundingClientRect(element: HTMLElement, space: HTMLElement): { top: number, left: number } {
-    const elementRect: DOMRect = offset(element);
-    const spaceElementRect: DOMRect = offset(space);
+export const getBlockPostiton = (element: HTMLElement, space: HTMLElement): { top: number, left: number } => {
+    const [elementRect, spaceElementRect] = getClientRects(element, space)
     return {
         top: elementRect.top - spaceElementRect.top + space.scrollTop,
         left: elementRect.left - spaceElementRect.left + space.scrollLeft,
     };
 }
 
-export function draggable(newblock: Block): void {
+export const blockDraggable = (targetblock: Block): void => {
+    let startX: number, startY: number;
+    let dragOffsetX: number = 0, dragOffsetY: number = 0;
+    let targetBlockRect: DOMRect;
+    let space: VisualBlock = targetblock.space;
+    let spaceRect: DOMRect = space.element.getBoundingClientRect();
     let isDragging = false;
-    let offsetX = 0;
-    let offsetY = 0;
-    let newBlockRect: DOMRect | null = null;
-    let spaceRect: DOMRect | null = null;
-    let space: VisualBlock = newblock.space;
-    function handleMouseDown(event: MouseEvent): void {
+
+    const handleMouseDown = (event: MouseEvent): void => {
         space.dropDown.close();
-        if (!newblock.draggableBlock.includes(event.target as HTMLElement)) {
-            return;
-        }
-        if (event.button !== 0) {
+        if (!targetblock.draggableBlock.includes(event.target as HTMLElement) || event.button !== 0) {
             return;
         }
 
         isDragging = true;
-        newBlockRect = offset(newblock.element);
-        spaceRect = offset(space.element);
-        if (newblock.parentInput) {
-            elementSolitary(newblock.element, space.blockSpace);
+        targetBlockRect = targetblock.element.getBoundingClientRect();
+
+        if (targetblock.parentInput) {
+            elementSolitaryPostiton(targetblock.element, space.blockSpace);
         }
 
-        newblock.displayElement.classList.add("drag-block");
+        targetblock.displayElement.classList.add("drag-block");
+        targetblock.dragStart();
 
-        newblock.dragStart();
+        startX = event.clientX
+        startY = event.clientY
+        if (targetblock.element.style.left) {
+            dragOffsetX = parseInt(targetblock.element.style.left)
+            dragOffsetY = parseInt(targetblock.element.style.top)
+        } else {
+            dragOffsetX = 0
+            dragOffsetY = 0
+        }
 
-        offsetX = event.clientX / space.zoom + spaceRect.left - newBlockRect.left - space.element.scrollLeft / space.zoom;
-        offsetY = event.clientY / space.zoom + spaceRect.top - newBlockRect.top - space.element.scrollTop / space.zoom;
-        
         addEventListeners();
     }
 
-    function handleMouseMove(event: MouseEvent): void {
-        if (isDragging) {
-            const left = event.clientX / space.zoom - offsetX;
-            const top = event.clientY / space.zoom - offsetY;
-            newblock.element.style.left = `${left}px`;
-            newblock.element.style.top = `${top}px`;
-        }
+    const handleMouseMove = (event: MouseEvent): void => {
+        if (!isDragging) return;
+        var deltaX = event.clientX - startX;
+        var deltaY = event.clientY - startY;
+
+        dragOffsetX += deltaX / space.zoom;
+        dragOffsetY += deltaY / space.zoom;
+        targetblock.element.style.left = `${dragOffsetX}px`;
+        targetblock.element.style.top = `${dragOffsetY}px`;
+
+        startX = event.clientX;
+        startY = event.clientY;
+
+        event.preventDefault();
     }
 
-    function handleMouseUp(): void {
+    const handleMouseUp = (): void => {
         isDragging = false;
-        
-        newblock.displayElement.classList.remove("drag-block");
-        newblock.dragEnd();
-        /*
-        let x = parseInt(newblock.element.style.left)
-        let y = parseInt(newblock.element.style.top)
-        newblock.element.style.top = `${Math.max(0, y)}px`
-        newblock.element.style.left = `${Math.max(0, x)}px`
-        */
+        targetblock.displayElement.classList.remove("drag-block");
+        targetblock.dragEnd();
         space.setPlaceholder()
         removeEventListeners();
-        
-        
     }
 
-    function addEventListeners(): void {
+    const addEventListeners = (): void => {
         document.addEventListener("mousemove", handleMouseMove);
         document.addEventListener("mouseup", handleMouseUp);
     }
 
-    function removeEventListeners(): void {
+    const removeEventListeners = (): void => {
         document.removeEventListener("mousemove", handleMouseMove);
         document.removeEventListener("mouseup", handleMouseUp);
     }
-
-    newblock.element.addEventListener("mousedown", handleMouseDown);
+    targetblock.element.addEventListener("mousedown", handleMouseDown);
 }
 
-export function backGroundDrag(space: VisualBlock) {
-    var isMouseDown = false;
+export function backGroundDraggable(space: VisualBlock) {
+    var isDragging = false;
     var startX: number, startY: number;
-
     space.element.addEventListener('mousedown', handleMouseDown);
     space.element.addEventListener('mouseup', handleMouseUp);
     space.element.addEventListener('mousemove', handleMouseMove);
@@ -102,18 +109,18 @@ export function backGroundDrag(space: VisualBlock) {
         if (event.target != space.scrollPlaceholder) {
             return;
         }
-        isMouseDown = true;
+        isDragging = true;
         startX = event.clientX;
         startY = event.clientY;
         event.preventDefault();
     }
 
     function handleMouseUp() {
-        isMouseDown = false;
+        isDragging = false;
     }
 
     function handleMouseMove(event: MouseEvent) {
-        if (!isMouseDown) return;
+        if (!isDragging) return;
 
         var deltaX = event.clientX - startX;
         var deltaY = event.clientY - startY;
@@ -124,7 +131,6 @@ export function backGroundDrag(space: VisualBlock) {
         startX = event.clientX;
         startY = event.clientY;
         event.preventDefault();
-
-        //space.setPlaceholder();
     }
+    space.element.addEventListener("mouseleave", () => { isDragging = false });
 }

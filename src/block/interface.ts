@@ -12,13 +12,14 @@ export interface newBlock {
     create?: boolean;
     inputs?: { [id: string]: blockInput };
     blockType?:string
-    defaultInsert:string
+    hat?:boolean
+    defaultInsert?:string
 }
 
 export interface blockInput {
     type: any;
-    value: Block | string | null;
-    element: HTMLElement | null;
+    value?: Block | string | null;
+    element?: HTMLElement | null;
 }
 
 export interface BlockInputData {
