@@ -1,5 +1,5 @@
 import { newBlock, blockInput, blockJson } from "./interface";
-import { elementSolitaryPostiton, getBlockPostiton, move } from "./utils/drag";
+import { elementSolitaryPostiton, getBlockPostiton, moveBy } from "./utils/drag";
 import measureDistance from "./utils/measure-distance";
 import { VisualBlock } from "./index";
 
@@ -9,7 +9,7 @@ export enum blockType {
     input = 2,
     singleInput = 3
 }
-// 这个排序实际上是权重,kick其实是
+// 这个排序实际上是权重,因为normal允许kick
 export enum ConnectType {
     prevent = 0, // 住址
     normal = 1, // 正常
@@ -57,6 +57,7 @@ export abstract class Block {
             this.inputs[id].element = this.element.querySelector(`[id="input-${id}"]`)!;
         });
         this.draggableBlock = Array.from(this.element.querySelectorAll(`[drag="true"]`))
+        this.draggableBlock.push(this.element)
         this.displayElement = this.element.querySelector(`[id="block-display"]`) as HTMLElement
     }
     public dragEnd(): void {
@@ -177,14 +178,14 @@ export abstract class Block {
             this.enterInput(input)
             if (insert) {
                 if (target.type == ConnectType.kick) {
-                    move(insert!.element,this.space.element, 25, 25)
+                    moveBy(insert!.element, this.space.element, 25, 25)
                 } else {
                     if (this.defaultInsert) {
                         insert = (insert as Block)
                         if (this.inputs[this.defaultInsert].type == blockType.method && !(this.inputs[this.defaultInsert].value instanceof Block)) {
-                            insert.cheackAndEnterInput(this, this.defaultInsert,()=>move(insert!.element,this.space.element, 25, 25))
+                            insert.cheackAndEnterInput(this, this.defaultInsert, () => moveBy(insert!.element, this.space.element, 25, 25))
                         } else {
-                            insert.cheackAndEnterInput(this.getSmallestChild(), 'next',()=>move(insert!.element,this.space.element, 25, 25))
+                            insert.cheackAndEnterInput(this.getSmallestChild(), 'next', () => moveBy(insert!.element, this.space.element, 25, 25))
                         }
                     }
                 }
@@ -208,10 +209,10 @@ export abstract class Block {
         if (first) {
             cloneElement.classList.remove('input-block');
             //this.parentInput = null;
-            move(this.element,this.space.element, 25, 25)
-            /*const pos = getBlockPostiton(this.element, this.space.blockSpace)
+            //move(this.element,this.space.element, 25, 25)
+            const pos = getBlockPostiton(this.element, this.space.blockSpace)
             cloneElement.style.left = `${pos.left + 25}px`;
-            cloneElement.style.top = `${pos.top + 25}px`*/
+            cloneElement.style.top = `${pos.top + 25}px`
         };
         let block = new this.space.blockClasses[this.blockType]({ create: false, element: cloneElement });
         if (first) {

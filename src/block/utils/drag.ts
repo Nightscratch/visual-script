@@ -5,16 +5,23 @@ function getClientRects(element: HTMLElement, space: HTMLElement): DOMRect[] {
     return [element.getBoundingClientRect(), space.getBoundingClientRect()]
 }
 
-export const move = (element: HTMLElement, space: HTMLElement, x: number, y: number): void => {
-    const [elementRect, spaceElementRect] = getClientRects(element, space)
+export const moveBy = (element: HTMLElement, space: HTMLElement, x: number, y: number): void => {
+    const elementRect = element.getBoundingClientRect()
+    move(element, space,elementRect.left+x,elementRect.top+y)
+    /*const [elementRect, spaceElementRect] = getClientRects(element, space)
     element.style.left = `${elementRect.left - spaceElementRect.left + space.scrollLeft + x}px`;
-    element.style.top = `${elementRect.top - spaceElementRect.top + space.scrollTop + y}px`;
+    element.style.top = `${elementRect.top - spaceElementRect.top + space.scrollTop + y}px`;*/
 }
 
+export const move = (element: HTMLElement, space: HTMLElement, x: number, y: number): void => {
+    const spaceElementRect = space.getBoundingClientRect()
+    element.style.left = `${space.scrollLeft + x - spaceElementRect.left}px`;
+    element.style.top = `${space.scrollTop + y - spaceElementRect.top}px`;
+}
+
+
 export const elementSolitaryPostiton = (element: HTMLElement, space: HTMLElement) => {
-    const [elementRect, spaceElementRect] = getClientRects(element, space)
-    element.style.left = `${elementRect.left - spaceElementRect.left + space.scrollLeft}px`;
-    element.style.top = `${elementRect.top - spaceElementRect.top + space.scrollTop}px`;
+    moveBy(element, space, 0, 0)
 }
 
 export const getBlockPostiton = (element: HTMLElement, space: HTMLElement): { top: number, left: number } => {
@@ -25,7 +32,7 @@ export const getBlockPostiton = (element: HTMLElement, space: HTMLElement): { to
     };
 }
 
-export const blockDraggable = (targetblock: Block): void => {
+export const blockDraggable = (targetblock: Block, dragging: Boolean = false): void => {
     let startX: number, startY: number;
     let dragOffsetX: number = 0, dragOffsetY: number = 0;
     let targetBlockRect: DOMRect;
@@ -35,7 +42,7 @@ export const blockDraggable = (targetblock: Block): void => {
 
     const handleMouseDown = (event: MouseEvent): void => {
         space.dropDown.close();
-        if (!targetblock.draggableBlock.includes(event.target as HTMLElement) || event.button !== 0) {
+        if ((!targetblock.draggableBlock.includes(event.target as HTMLElement) || event.button !== 0) && !dragging) {
             return;
         }
 
@@ -58,7 +65,6 @@ export const blockDraggable = (targetblock: Block): void => {
             dragOffsetX = 0
             dragOffsetY = 0
         }
-
         addEventListeners();
     }
 
@@ -96,6 +102,14 @@ export const blockDraggable = (targetblock: Block): void => {
         document.removeEventListener("mouseup", handleMouseUp);
     }
     targetblock.element.addEventListener("mousedown", handleMouseDown);
+    function startDrag(e: MouseEvent) {
+        document.removeEventListener("mousemove", startDrag);
+        handleMouseDown(e);
+        dragging = false
+    }
+    if (dragging) {
+        document.addEventListener("mousemove", startDrag)
+    }
 }
 
 export function backGroundDraggable(space: VisualBlock) {

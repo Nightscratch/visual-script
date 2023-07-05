@@ -47,6 +47,7 @@
 }
 
 .drag-block {
+    z-index: 999;
     filter: drop-shadow(0 0 10px rgba(0, 0, 0, 0.5));
 }
 
@@ -165,6 +166,10 @@ body {
     border-bottom: none;
 }
 
+.model-block{
+    position: static;
+    margin-top: 20px;
+}
 .blue {
     --color-primary: rgb(76, 151, 255);
     --color-border: rgb(51, 115, 204);

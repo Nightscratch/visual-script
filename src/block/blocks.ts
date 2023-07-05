@@ -33,7 +33,7 @@ export class AddBlock extends Reporter {
     public create() {
         this.element.innerHTML =
             `
-            <div id="block-display" drag="true" class="block-line green">
+            <div id="block-display" drag="true" class="block-line green block-round">
                 <div class="block-input" id="input-number1" drag="true"></div>
                 <p class="block-text" drag="true">+</p>
                 <div class="block-input" id="input-number2" drag="true"></div>

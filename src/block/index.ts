@@ -3,7 +3,6 @@ import { blockDraggable, backGroundDraggable } from "./utils/drag";
 import { addBlockDropdown, DropDown, addSpaceDropdown } from "./utils/combobox"
 import { createZoomBtn } from "./utils/zoom-button"
 import { Block } from "./block";
-
 export class VisualBlock {
     public element: HTMLElement;
     public blocks: Block[] = [];
@@ -47,8 +46,6 @@ export class VisualBlock {
         this.blockSpace.classList.add('block-container-space')
         this.element.appendChild(this.blockSpace);
 
-        (window as any).test = this
-
         this.dropDown = new DropDown()
         document.body.appendChild(this.dropDown.element)
         addSpaceDropdown(this)
@@ -75,14 +72,15 @@ export class VisualBlock {
         this.element.scrollTop = scrollTop
 
     }
-    public addBlock(newBlock: Block): void {
+    public addBlock(newBlock: Block,dragging:Boolean=false): void {
         newBlock.space = this;
         this.blocks.push(newBlock);
         this.blockSpace.appendChild(newBlock.element);
-        blockDraggable(newBlock);
+        blockDraggable(newBlock,dragging);
         addBlockDropdown(newBlock, this.dropDown);
     }
     public removeBlock(delBlock: Block): void {
+        // TODO:可用优化
         this.blocks.splice(this.blocks.indexOf(delBlock), 1)
     }
     public registerBlock(blockClass: any) {

@@ -19,6 +19,10 @@ export class BlockManager {
             this.space.blockSpace.appendChild(element)
         })
     }
+    empty(){
+        this.space.blocks = []
+        this.space.blockSpace.innerHTML = '' 
+    }
 }
 export class BlockContainer implements NewBlockContainer {
     public element: HTMLElement[] = []
@@ -27,8 +31,11 @@ export class BlockContainer implements NewBlockContainer {
     constructor() {}
 
     load(space:VisualBlock){
+        debugger
         this.block = space.blocks
+        console.log("space.blockSpace.childNodes",space.blockSpace.childNodes)
         space.blockSpace.childNodes.forEach((element)=>{
+            console.log(element)
             this.element.push(element as HTMLElement)
         })
     }

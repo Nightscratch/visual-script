@@ -35,7 +35,6 @@
     border-radius: 5px;
     margin: 5px;
     margin-right: 0px;
-    overflow: hidden;
 }
 
 .display-space {
@@ -43,7 +42,7 @@
     display: flex;
     flex-flow: column;
     margin: 0px 5px;
-
+    
 }
 
 .view-port {
@@ -73,7 +72,34 @@
 }
 
 .code-tool-box {
-    width: 30px;
+    width: 180px;
     height: 100%;
-    background-color: aqua;
+    display: flex;
+    position: absolute;
+    pointer-events: none;
+    background-color: #0000002f;
+    z-index: 1;
+}
+.code-tool-box * {
+    pointer-events: auto;
+}
+.code-model{
+    pointer-events: none;
+}
+.code-tool-box-categorize{
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+    height: 100%;
+    background-color: #f3f3f3;
+    width: 40px;
+}
+.code-tool-box-categorize li{
+    width: 100%;
+}
+
+.code-model{
+    margin: 0 10px;
+
+
 }

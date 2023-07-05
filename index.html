@@ -1,78 +1,115 @@
 <!DOCTYPE html>
 <html lang="en">
 
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite App</title>
-  </head>
+    <head>
+        <meta charset="UTF-8" />
+        <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Vite App</title>
+    </head>
 
-  <body>
-    <div class="work-space">
-      <ul class="nav">
-        <li>
-          <p>Scratch 加强版</p>
-        </li>
-        <li class="btn">
-          <p>文件</p>
-        </li>
-        <li class="btn">
-          <p>设置</p>
-        </li>
-        <li class="btn">
-          <p>帮助</p>
-        </li>
-      </ul>
-      <div class="edit-space">
-        <div class="code-space">
-          <div class="code-tool-box"></div>
-          <div id="zoom"></div>
-          <div id="blockDiv" class="block-space"></div>
+    <body>
+        <div class="work-space">
+            <ul class="nav">
+                <li>
+                    <p>Scratch 加强版</p>
+                </li>
+                <li class="btn">
+                    <p>文件</p>
+                </li>
+                <li class="btn">
+                    <p>设置</p>
+                </li>
+                <li class="btn">
+                    <p>帮助</p>
+                </li>
+            </ul>
+            <div class="edit-space">
+                <div class="code-space">
+                    <div class="code-tool-box">
+                        <ul class="code-tool-box-categorize" id="tool-box">
+                        </ul>
+                        <div class="code-model" id="code-model">
+
+                        </div>
+                    </div>
+                    <div id="zoom"></div>
+                    <div id="blockDiv" class="block-space"></div>
+                </div>
+
+                <div class="display-space">
+                    <div class="view-port">
+
+                    </div>
+                    <div class="sprite-list" id="sprite-list">
+                        <button id="add">+</button>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <div class="display-space">
-          <div class="view-port">
-
-          </div>
-          <div class="sprite-list">
-
-          </div>
-        </div>
-      </div>
-    </div>
 
 
-    <script type="module">
-      import './page-style.css'
-      import './src/assets/css/block.css'
+        <script type="module">
+            import './page-style.css'
+            import './src/assets/css/block.css'
+            import './src/assets/css/sprite.css'
 
-      import { VisualBlock } from './src/block/index'
-      import * as blocks from './src/block/blocks'
-      import { BlockManager, BlockContainer } from './src/block-manager'
-
-
-      let app = new VisualBlock({
-        element: document.getElementById('blockDiv'),
-        zoomElement: document.getElementById('zoom')
-      });
-
-      for (const i in blocks) {
-        app.registerBlock(blocks[i])
-        app.addBlock(new app.blockClasses[i]({
-          create: true
-        }));
-      }
-
-      let manager = new BlockManager(app)
-      let file1 = new BlockContainer()
-
-      file1.load(app)
-      manager.load(file1)
+            import { VisualBlock } from './src/block/index'
+            import * as blocks from './src/block/blocks'
+            import { BlockManager, BlockContainer } from './src/block-manager'
+            import { SpriteManager, Sprite } from './src/sprite/index'
+            import { ToolBox, Categorize } from './src/tool-box/index'
 
 
-      window.app = app
-    </script>
-  </body>
+            let app = new VisualBlock({
+                element: document.getElementById('blockDiv'),
+                zoomElement: document.getElementById('zoom')
+            });
+
+            let blockManager = new BlockManager(app)
+            let spriteManager = new SpriteManager({
+                element: document.getElementById('sprite-list'),
+                sprites: [],
+                blockManager
+            })
+            spriteManager.addSprite(new Sprite({ spriteName: '角色0' }))
+            for (const i in blocks) {
+                app.registerBlock(blocks[i])
+            }
+            
+
+            let toolBox = new ToolBox({
+                space:app,
+                element: document.getElementById('tool-box'),
+                modelElement:document.getElementById('code-model'),
+                categorizes: [
+                    new Categorize({
+                        categorizeName: '运动',
+                        blocks: [
+                            blocks.MoveBlock,
+                        ]
+                    }),
+                    new Categorize({
+                        categorizeName: '控制',
+                        blocks: [
+                            blocks.IfBlock,
+                            blocks.StartBlock,
+                        ]
+                    }),
+                    new Categorize({
+                        categorizeName: '运算',
+                        blocks: [
+                            blocks.AddBlock,
+                        ]
+                    })
+                ]
+            })
+
+            document.getElementById('add').addEventListener('click', () => {
+                spriteManager.addSprite(new Sprite({ spriteName: '角色' + spriteManager.sprites.length }))
+            })
+        </script>
+    </body>
 
 </html>

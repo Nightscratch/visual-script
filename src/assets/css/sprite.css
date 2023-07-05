@@ -1,0 +1,20 @@
+.sprite{
+    width: 100%;
+    height: 30px;
+    background-color: rgb(255, 255, 255);
+    display: flex;
+    align-items: center;
+    border-bottom: 2px solid #000;
+}
+
+.sprite-active{
+    background-color: rgb(33, 196, 214)
+}
+.sprite p{
+    margin: 0;
+    height: 20px;
+}
+
+.sprite button{
+    margin-left: 5px;
+}
