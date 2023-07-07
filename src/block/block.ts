@@ -7,7 +7,6 @@ export enum blockType {
     method = 0,
     next = 1,
     input = 2,
-    singleInput = 3
 }
 // 这个排序实际上是权重,因为normal允许kick
 export enum ConnectType {
@@ -226,6 +225,7 @@ export abstract class Block {
     }
     public copy(first = true): Block {
         let clone: Block = this.clone(first)
+
         this.space.addBlock(clone)
 
         Object.keys(this.inputs).forEach(inputId => {
@@ -254,6 +254,16 @@ export abstract class Block {
             }
         });
     }
+    public toCode(first = true): string {
+        let arg:{[id:string]:string} = {};
+        Object.keys(this.inputs).forEach(inputId => {
+            if (this.inputs[inputId].value instanceof Block) {
+                arg[inputId] = (this.inputs[inputId].value as Block).toCode(false)
+            }
+        });
+        return this.compile(arg)
+    }
+    abstract compile(arg:{[id:string]:string}):string
     public toJson(first = true): blockJson {
         let json: blockJson = {
             blockType: this.blockType,
@@ -270,17 +280,12 @@ export abstract class Block {
                     type: 'block',
                     value: (this.inputs[inputId].value as Block).toJson(false)
                 };
-
-            } else if (this.inputs[inputId].value instanceof String) {
-                json.inputs[inputId] = {
-                    type: 'text',
-                    value: this.inputs[inputId].value as string
-                };
             }
         });
 
         return json
     }
+
     public saveProperties(json: blockJson) { }
     public loadProperties(json: blockJson) { }
 
@@ -298,8 +303,6 @@ export abstract class Block {
                 if (input.value) {
                     newBlock.loadInputs(input.value, false).enterInput(this.inputs[inputId])
                 }
-            } else {
-
             }
         }
         return this

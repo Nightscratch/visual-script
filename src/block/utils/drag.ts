@@ -53,7 +53,7 @@ export const blockDraggable = (targetblock: Block, dragging: Boolean = false): v
             elementSolitaryPostiton(targetblock.element, space.blockSpace);
         }
 
-        targetblock.displayElement.classList.add("drag-block");
+        targetblock.element.classList.add("drag-block");
         targetblock.dragStart();
 
         startX = event.clientX
@@ -86,7 +86,7 @@ export const blockDraggable = (targetblock: Block, dragging: Boolean = false): v
 
     const handleMouseUp = (): void => {
         isDragging = false;
-        targetblock.displayElement.classList.remove("drag-block");
+        targetblock.element.classList.remove("drag-block");
         targetblock.dragEnd();
         space.setPlaceholder()
         removeEventListeners();

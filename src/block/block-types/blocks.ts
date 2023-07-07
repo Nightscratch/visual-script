@@ -1,17 +1,19 @@
-import { Block,blockType,ConnectType } from "./block";
-import { BlockConnectType, newBlock } from "./interface";
+import { Block, blockType, ConnectType } from "../block";
+import { BlockConnectType, newBlock } from "../interface";
+import * as html from "./html"
 
 abstract class Reporter extends Block {
     constructor(block: newBlock) {
         super(block)
     }
-    public enterInputCheack(targetBlock:Block,inputId:string):ConnectType{
-        if (![blockType.singleInput,blockType.input].includes(targetBlock.inputs[inputId].type)) {
+    public enterInputCheack(targetBlock: Block, inputId: string): ConnectType {
+        if (!blockType.input == targetBlock.inputs[inputId].type) {
             return ConnectType.prevent
         }
         return ConnectType.kick
     }
     abstract create(): void;
+    abstract compile(arg: { [id: string]: string }): string
 }
 
 
@@ -30,15 +32,20 @@ export class AddBlock extends Reporter {
         block.blockType = "AddBlock"
         super(block)
     }
+
+    static baseHtml = html.block('green', [
+        html.line(false, [
+            html.input('number1'),
+            html.text('+'),
+            html.input('number2')
+        ])
+    ])
     public create() {
-        this.element.innerHTML =
-            `
-            <div id="block-display" drag="true" class="block-line green block-round">
-                <div class="block-input" id="input-number1" drag="true"></div>
-                <p class="block-text" drag="true">+</p>
-                <div class="block-input" id="input-number2" drag="true"></div>
-            </div>
-            `.replace(' ', '')
+        this.element.appendChild(AddBlock.baseHtml.cloneNode(true))
+    }
+
+    public compile(arg: { [id: string]: string }): string {
+        return `(${arg.number1} + ${arg.number2})`
     }
 }
 
@@ -55,14 +62,17 @@ export class StartBlock extends Block {
         block.blockType = "StartBlock"
         super(block)
     }
+
     public create() {
-        this.element.innerHTML =
-            `
-            <div id="block-display" drag="true" class="block-line block-hat yellow">
-                <p class="block-text" drag="true">程序开始运行</p>
-            </div>
-            <div class="next-input" id="input-next"></div>
-            `.replace(' ', '')
+        this.element.appendChild(StartBlock.baseHtml.cloneNode(true))
+        this.element.appendChild(html.next())
+    }
+
+    static baseHtml = html.block('block-line block-hat yellow', [
+            html.text('当绿旗被点击时'),
+    ])
+    public compile(arg: { [id: string]: string }): string {
+        return `function start(){${arg.next}}`
     }
 }
 
@@ -94,6 +104,9 @@ export class MoveBlock extends Block {
             </div>
             <div class="next-input" id="input-next"></div>
             `.replace(' ', '')
+    }
+    public compile(arg: { [id: string]: string }): string {
+        return ''
     }
 }
 
@@ -139,5 +152,8 @@ export class IfBlock extends Block {
             </div>
             <div class="next-input" id="input-next"></div>
             `.replace(' ', '')
+    }
+    public compile(arg: { [id: string]: string }): string {
+        return ''
     }
 }

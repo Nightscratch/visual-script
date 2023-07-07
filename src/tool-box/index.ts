@@ -9,7 +9,6 @@ interface IToolBox{
     categorizes?:Categorize[]
     element:HTMLElement
     modelElement:HTMLElement
-    selectedCategorize:Categorize
     space:VisualBlock
 }
 
@@ -62,12 +61,12 @@ export class ToolBox{
 
 interface Icategorize{
     categorizeName:string;
-    blocks:Block[]
+    blocks:typeof Block[]
 }
 
 export class Categorize{
     categorizeName:string;
-    blocks:Block[];
+    blocks:typeof Block[];
     element:HTMLElement
     constructor(opt:Icategorize){
         this.blocks = opt.blocks

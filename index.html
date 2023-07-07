@@ -9,106 +9,22 @@
     </head>
 
     <body>
-        <div class="work-space">
-            <ul class="nav">
-                <li>
-                    <p>Scratch 加强版</p>
-                </li>
-                <li class="btn">
-                    <p>文件</p>
-                </li>
-                <li class="btn">
-                    <p>设置</p>
-                </li>
-                <li class="btn">
-                    <p>帮助</p>
-                </li>
-            </ul>
-            <div class="edit-space">
-                <div class="code-space">
-                    <div class="code-tool-box">
-                        <ul class="code-tool-box-categorize" id="tool-box">
-                        </ul>
-                        <div class="code-model" id="code-model">
+        <div id="app">
 
-                        </div>
-                    </div>
-                    <div id="zoom"></div>
-                    <div id="blockDiv" class="block-space"></div>
-                </div>
-
-                <div class="display-space">
-                    <div class="view-port">
-
-                    </div>
-                    <div class="sprite-list" id="sprite-list">
-                        <button id="add">+</button>
-                    </div>
-                </div>
-            </div>
         </div>
-
-
-
         <script type="module">
             import './page-style.css'
             import './src/assets/css/block.css'
             import './src/assets/css/sprite.css'
 
-            import { VisualBlock } from './src/block/index'
-            import * as blocks from './src/block/blocks'
-            import { BlockManager, BlockContainer } from './src/block-manager'
-            import { SpriteManager, Sprite } from './src/sprite/index'
-            import { ToolBox, Categorize } from './src/tool-box/index'
+            import { PlayEngine } from './src/index'
+            import { Sprite } from "./src/sprite"
+            import * as blocks from "./src/block/block-types/blocks"
 
-
-            let app = new VisualBlock({
-                element: document.getElementById('blockDiv'),
-                zoomElement: document.getElementById('zoom')
-            });
-
-            let blockManager = new BlockManager(app)
-            let spriteManager = new SpriteManager({
-                element: document.getElementById('sprite-list'),
-                sprites: [],
-                blockManager
+            const app = new PlayEngine({
+                element:document.getElementById('app')
             })
-            spriteManager.addSprite(new Sprite({ spriteName: '角色0' }))
-            for (const i in blocks) {
-                app.registerBlock(blocks[i])
-            }
-            
-
-            let toolBox = new ToolBox({
-                space:app,
-                element: document.getElementById('tool-box'),
-                modelElement:document.getElementById('code-model'),
-                categorizes: [
-                    new Categorize({
-                        categorizeName: '运动',
-                        blocks: [
-                            blocks.MoveBlock,
-                        ]
-                    }),
-                    new Categorize({
-                        categorizeName: '控制',
-                        blocks: [
-                            blocks.IfBlock,
-                            blocks.StartBlock,
-                        ]
-                    }),
-                    new Categorize({
-                        categorizeName: '运算',
-                        blocks: [
-                            blocks.AddBlock,
-                        ]
-                    })
-                ]
-            })
-
-            document.getElementById('add').addEventListener('click', () => {
-                spriteManager.addSprite(new Sprite({ spriteName: '角色' + spriteManager.sprites.length }))
-            })
+            app.spriteManager.addSprite(new Sprite({ spriteName: '角色0' }))
         </script>
     </body>
 

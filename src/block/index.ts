@@ -87,27 +87,6 @@ export class VisualBlock {
         let j = new blockClass({create:true})
         this.blockClasses[j.blockType] = blockClass
     }
-    public load(data: string): Promise<void> {
-        return new Promise((resolve, reject) => {
-            for (const block of JSON.parse(data) as blockJson[]) {
-                let newblock = new this.blockClasses[block.blockType]({ create: true });
-                this.addBlock(newblock)
-                newblock.loadInputs(block, true)
-            }
-            resolve()
-        })
-    }
-    public save(): Promise<blockJson[]> {
-        return new Promise((resolve) => {
-            let res:blockJson[] = []
-            for (const [blockName, block] of Object.entries(this.blocks)) {
-                if (!block.parentInput) { // 是父节点
-                    res.push(block.toJson(false))
-                }
-            }
-            resolve(res)
-        })
-    }
     public clean(): Promise<void> {
         return new Promise((resolve) => {
             this.blockSpace.innerHTML = ''

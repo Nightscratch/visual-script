@@ -31,12 +31,23 @@ export class BlockContainer implements NewBlockContainer {
     constructor() {}
 
     load(space:VisualBlock){
-        debugger
+        
         this.block = space.blocks
         console.log("space.blockSpace.childNodes",space.blockSpace.childNodes)
         space.blockSpace.childNodes.forEach((element)=>{
             console.log(element)
             this.element.push(element as HTMLElement)
+        })
+    }
+    compile(): Promise<string> {
+        return new Promise((resolve) => {
+            let res = ''
+            for (const [blockName, block] of Object.entries(this.block)) {
+                if (!block.parentInput) { // 是父节点
+                    res += block.toCode(true)
+                }
+            }
+            resolve(res)
         })
     }
 }
