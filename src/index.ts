@@ -57,6 +57,8 @@ export class PlayEngine {
                     categorizeName: '运算',
                     blocks: [
                         blocks.AddBlock,
+                        blocks.NumberBlock,
+
                     ]
                 })
             ]

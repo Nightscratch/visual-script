@@ -11,12 +11,10 @@ export function block(blockClass: string, content: HTMLElement[]): HTMLElement {
 
 export function line(method: boolean, content: HTMLElement[]): HTMLElement {
   const lineElement = document.createElement('div');
-
+  lineElement.classList.add('block-line');
   if (method) {
     lineElement.classList.add('block-method');
-  } else {
-    lineElement.classList.add('block-line');
-  }
+  } 
   content.forEach(child => {
     lineElement.appendChild(child);
   });
@@ -37,14 +35,13 @@ export function input(value: string): HTMLElement {
   inputElement.classList.add('block-input');
   inputElement.id = `input-${value}`;
   inputElement.setAttribute('drag', 'true');
-
   return inputElement;
 }
 
-export function method(): HTMLElement {
+export function method(value:string): HTMLElement {
   const methodElement = document.createElement('div');
   methodElement.classList.add('block-block-input');
-  methodElement.id = 'input-if';
+  methodElement.id = `input-${value}`;
   methodElement.setAttribute('drag', 'true');
 
   return methodElement;
@@ -54,4 +51,18 @@ export function next(){
   nextElement.classList.add('next-input')
   nextElement.id = 'input-next'
   return nextElement
+}
+
+export function textInput(){
+  const textInputElement = document.createElement('input');
+  textInputElement.classList.add('text-input')
+  textInputElement.id = 'text-input'
+  return textInputElement
+}
+
+export function br(){
+  const brElement = document.createElement('div');
+  brElement.classList.add('block-br')
+  brElement.id = 'br'
+  return brElement
 }

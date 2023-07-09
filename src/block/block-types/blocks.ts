@@ -3,6 +3,7 @@ import { BlockConnectType, newBlock } from "../interface";
 import * as html from "./html"
 
 abstract class Reporter extends Block {
+    hat = false
     constructor(block: newBlock) {
         super(block)
     }
@@ -12,14 +13,11 @@ abstract class Reporter extends Block {
         }
         return ConnectType.kick
     }
-    abstract create(): void;
     abstract compile(arg: { [id: string]: string }): string
 }
 
 
 export class AddBlock extends Reporter {
-    prohibitBlock = true
-    hat = false
     constructor(block: newBlock) {
         block.inputs = {
             "number1": {
@@ -40,14 +38,29 @@ export class AddBlock extends Reporter {
             html.input('number2')
         ])
     ])
-    public create() {
-        this.element.appendChild(AddBlock.baseHtml.cloneNode(true))
-    }
-
     public compile(arg: { [id: string]: string }): string {
         return `(${arg.number1} + ${arg.number2})`
     }
 }
+export class NumberBlock extends Reporter {
+    constructor(block: newBlock) {
+        block.inputs = {}
+        block.blockType = "NumberBlock"
+        super(block)
+    }
+
+    static baseHtml = html.block('green', [
+        html.line(false, [
+            html.text('int('),
+            html.textInput(),
+            html.text(')'),
+        ])
+    ])
+    public compile(arg: { [id: string]: string }): string {
+        return `(${arg.number1} + ${arg.number2})`
+    }
+}
+
 
 
 export class StartBlock extends Block {
@@ -62,12 +75,6 @@ export class StartBlock extends Block {
         block.blockType = "StartBlock"
         super(block)
     }
-
-    public create() {
-        this.element.appendChild(StartBlock.baseHtml.cloneNode(true))
-        this.element.appendChild(html.next())
-    }
-
     static baseHtml = html.block('block-line block-hat yellow', [
             html.text('当绿旗被点击时'),
     ])
@@ -94,7 +101,7 @@ export class MoveBlock extends Block {
         block.blockType = "MoveBlock"
         super(block)
     }
-    public create() {
+    /*public create() {
         this.element.innerHTML =
             `
             <div id="block-display" drag="true" class="block-line blue">
@@ -104,7 +111,17 @@ export class MoveBlock extends Block {
             </div>
             <div class="next-input" id="input-next"></div>
             `.replace(' ', '')
-    }
+    }*/
+    static baseHtml = html.block('blue', [
+        html.line(false, [
+            html.text('移动'),
+            html.br(),
+            html.input('x'),
+            html.br(),
+            html.input('y'),
+        ])
+    ])
+
     public compile(arg: { [id: string]: string }): string {
         return ''
     }
@@ -131,7 +148,7 @@ export class IfBlock extends Block {
         block.blockType = "IfBlock"
         super(block)
     }
-    public create() {
+    /*public create() {
         this.element.innerHTML =
             `
             <div id="block-display" drag="true" class="yellow"> 
@@ -152,7 +169,19 @@ export class IfBlock extends Block {
             </div>
             <div class="next-input" id="input-next"></div>
             `.replace(' ', '')
-    }
+    }*/
+    static baseHtml = html.block('yellow', [
+        html.line(true, [
+            html.text('如果'),
+            html.input('condition'),
+            html.text('那么'),
+        ]),
+        html.method('if'),
+        html.line(true, [html.text('否则'),]),
+        html.method('else'),
+        html.line(true, [html.text('end'),]),
+    ])
+
     public compile(arg: { [id: string]: string }): string {
         return ''
     }

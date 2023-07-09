@@ -2,7 +2,7 @@ import { newBlock, blockInput, blockJson } from "./interface";
 import { elementSolitaryPostiton, getBlockPostiton, moveBy } from "./utils/drag";
 import measureDistance from "./utils/measure-distance";
 import { VisualBlock } from "./index";
-
+import { next as htmlNext } from "./block-types/html";
 export enum blockType {
     method = 0,
     next = 1,
@@ -42,15 +42,19 @@ export abstract class Block {
         if (!this.element) {
             this.element = document.createElement('div')
             this.element.setAttribute('class', 'block')
-            this.create()
+            this.create(this.element)
+            this.element.appendChild((<typeof Block>this.constructor).baseHtml.cloneNode(true))
+            this.element.appendChild(htmlNext())
         }
         this.blockType = block.blockType!
         this.hat = block.hat!
         this.defaultInsert = block.defaultInsert!
 
         this.getInput()
+        this.setBr()
     }
-    abstract create(): void
+    static baseHtml: HTMLElement;
+    create(element:HTMLElement): void{}
     public getInput() {
         Object.keys(this.inputs).forEach((id: keyof typeof this.inputs) => {
             this.inputs[id].element = this.element.querySelector(`[id="input-${id}"]`)!;
@@ -58,6 +62,15 @@ export abstract class Block {
         this.draggableBlock = Array.from(this.element.querySelectorAll(`[drag="true"]`))
         this.draggableBlock.push(this.element)
         this.displayElement = this.element.querySelector(`[id="block-display"]`) as HTMLElement
+    }
+    public setBr(){
+        this.element.querySelectorAll(`[id="br"]`).forEach((e)=>{
+            console.log(e);
+            (e as HTMLElement).addEventListener('click',(ev:MouseEvent)=>{
+                //if (ev.target != this.element) return;
+                e.classList.toggle('br-open')
+            })  
+        })
     }
     public dragEnd(): void {
         const smallestChild = this.getSmallestChild();

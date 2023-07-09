@@ -8,6 +8,7 @@
     background-color: var(--color-primary);
     border: 2px solid var(--color-border);
     border-radius: 3px;
+    flex-wrap: wrap;
 }
 
 .block-method:not(:last-child) {
@@ -169,6 +170,28 @@ body {
 .model-block{
     position: static;
     margin-top: 20px;
+}
+
+.text-input{
+    width: 20px;
+    border-radius: 5px;
+    border: none;
+    margin: 2px;
+}
+.block-br{
+    width: 10px;
+    height: 10px;
+    background-color: #eee;
+}
+.br-open{
+    background-color: transparent;
+    flex: 1;
+}
+.br-open::before{
+    content: ' s';
+    background-color: rgb(36, 175, 26);
+    width: 10px;
+    height: 10px;
 }
 .blue {
     --color-primary: rgb(76, 151, 255);
